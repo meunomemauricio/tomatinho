@@ -11,11 +11,14 @@ gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Notify', '0.7')
 
 from gi.repository import Gtk  # noqa: E402
+from gi.repository import GdkPixbuf
 from gi.repository import AppIndicator3  # noqa: E402
 from gi.repository import Notify  # noqa: E402
 from gi.repository import GObject  # noqa: E402
 
 from pkg_resources import resource_filename
+
+from . import appinfo
 
 CUR_DIR = os.path.dirname(os.path.realpath(__file__))
 HOME_DIR = os.path.expanduser('~')
@@ -45,9 +48,6 @@ def start_database():
 class Tomatinho(object):
     """Pomodoro Timer Application"""
 
-    # GTK Variables
-    APPINDICATOR_ID = "tomatinho"
-
     # Icons
     ICON_IDLE = resource_filename(__name__, 'icons/tomate-idle.png')
     ICON_POMO = resource_filename(__name__, 'icons/tomate-pomo.png')
@@ -62,7 +62,7 @@ class Tomatinho(object):
 
     def __init__(self):
         self.indicator = AppIndicator3.Indicator.new(
-            self.APPINDICATOR_ID,
+            appinfo.ID,
             self.ICON_IDLE,
             AppIndicator3.IndicatorCategory.APPLICATION_STATUS,
         )
@@ -93,7 +93,7 @@ class Tomatinho(object):
         self.menu.show_all()
 
         self.indicator.set_menu(self.menu)
-        Notify.init(self.APPINDICATOR_ID)
+        Notify.init(appinfo.ID)
 
     def add_new_menu_item(self, text, action):
         menu_item = Gtk.MenuItem(text)
@@ -179,13 +179,15 @@ class Tomatinho(object):
     def about_dialog(self, source):
         about_dialog = Gtk.AboutDialog()
         about_dialog.set_destroy_with_parent(True)
-        about_dialog.set_icon_name('Tomatinho Timer')
-        about_dialog.set_name('Tomatinho Timer')
-        about_dialog.set_version('0.1')
-        about_dialog.set_copyright('(C) 2016 Mauricio Freitas')
-        about_dialog.set_comments('Simples aplicativo temporizador para '
-                                  'Técnica Pomodoro')
-        about_dialog.set_authors(['Mauricio Freitas'])
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.ICON_POMO)
+        about_dialog.set_logo(pixbuf)
+        about_dialog.set_program_name(appinfo.NAME)
+        about_dialog.set_version(appinfo.VERSION)
+        about_dialog.set_copyright(appinfo.COPYRIGHT)
+        about_dialog.set_comments(appinfo.DESCRIPTION)
+        about_dialog.set_authors([appinfo.AUTHOR])
+        about_dialog.set_license_type(Gtk.License.MIT_X11)
+        about_dialog.set_website(appinfo.SITE)
         about_dialog.run()
         about_dialog.destroy()
 

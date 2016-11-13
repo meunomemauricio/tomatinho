@@ -1,17 +1,22 @@
 # -*- coding: utf-8 -*-
+import sys
+
 from setuptools import setup, find_packages
+
+sys.path.append('src')
+from tomatinho import appinfo
 
 with open('README.md') as readme_file:
     readme = readme_file.read()
 
 setup(
-    name='tomatinho',
-    version='0.1',
-    description='GTK Pomodoro Timer application',
+    name=appinfo.ID,
+    version=appinfo.VERSION,
+    description=appinfo.DESCRIPTION,
     long_description=readme,
-    license='MIT',
-    author='Mauricio Freitas',
-    url='https://github.com/meunomemauricio/tomatinho',
+    license=appinfo.LICENSE,
+    author=appinfo.AUTHOR,
+    url=appinfo.SITE,
     package_dir={'':'src'},
     packages=find_packages('src'),
     classifiers=[
