@@ -1,4 +1,3 @@
-#! /usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import datetime
@@ -15,6 +14,8 @@ from gi.repository import Gtk  # noqa: E402
 from gi.repository import AppIndicator3  # noqa: E402
 from gi.repository import Notify  # noqa: E402
 from gi.repository import GObject  # noqa: E402
+
+from pkg_resources import resource_filename
 
 CUR_DIR = os.path.dirname(os.path.realpath(__file__))
 HOME_DIR = os.path.expanduser('~')
@@ -48,10 +49,10 @@ class Tomatinho(object):
     APPINDICATOR_ID = "tomatinho"
 
     # Icons
-    ICON_IDLE = os.path.join(CUR_DIR, 'icons/tomate-idle.png')
-    ICON_POMO = os.path.join(CUR_DIR, 'icons/tomate-pomo.png')
-    ICON_REST_S = os.path.join(CUR_DIR, 'icons/tomate-rest-s.png')
-    ICON_REST_L = os.path.join(CUR_DIR, 'icons/tomate-rest-l.png')
+    ICON_IDLE = resource_filename(__name__, 'icons/tomate-idle.png')
+    ICON_POMO = resource_filename(__name__, 'icons/tomate-pomo.png')
+    ICON_REST_S = resource_filename(__name__, 'icons/tomate-rest-s.png')
+    ICON_REST_L = resource_filename(__name__, 'icons/tomate-rest-l.png')
 
     # States
     IDLE_STATE = 'Parado'
