@@ -8,15 +8,15 @@ gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Notify', '0.7')
 
 from gi.repository import Gtk  # noqa: E402
-from gi.repository import GdkPixbuf
+from gi.repository import GdkPixbuf  # noqa: E402
 from gi.repository import AppIndicator3  # noqa: E402
 from gi.repository import Notify  # noqa: E402
 from gi.repository import GObject  # noqa: E402
 
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename  # noqa: E402
 
-from . import appinfo
-from . event_recorder import EventRecorder
+from . import appinfo  # noqa: E402
+from . event_recorder import EventRecorder  # noqa: E402
 
 
 class States(object):

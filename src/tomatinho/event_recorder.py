@@ -1,3 +1,4 @@
+"""This module is responsable for storing event information on the DB."""
 import datetime
 import sqlite3
 import os.path
@@ -33,6 +34,13 @@ class EventRecorder(object):
         return conn
 
     def record(self, operation, completed):
+        """Record an event to the DB.
+
+        :param operation: A value from the States enum representing the state
+        that has just finished.
+        :param completed: True if the operation was completed or False if it
+        was interrupted.
+        """
         current_datetime = datetime.datetime.now()
         self.statistics_db.cursor().execute(
             self.INSERT_QUERY,
