@@ -9,7 +9,7 @@ class EventRecorder(object):
     """Record events on the Database."""
 
     INSERT_QUERY = 'INSERT INTO statistics VALUES (?, ?, ?)'
-    CREATE_QUERY = ('CREATE TABLE statistics ('
+    CREATE_QUERY = ('CREATE TABLE IF NOT EXISTS statistics ('
                     'operation INTEGER,'
                     'completed BOOLEAN,'
                     'datetime TIMESTAMP'
@@ -28,15 +28,8 @@ class EventRecorder(object):
         if not os.path.exists(appinfo.APP_DIR):
             os.makedirs(appinfo.APP_DIR)
         conn = sqlite3.connect(os.path.join(appinfo.APP_DIR, 'tomatinho.db'))
-        cursor = conn.cursor()
-
-        try:
-            cursor.execute(self.CREATE_QUERY)
-            conn.commit()
-        except sqlite3.OperationalError:
-            # Table already exists
-            pass
-
+        conn.cursor().execute(self.CREATE_QUERY)
+        conn.commit()
         return conn
 
     def record(self, operation, completed):
@@ -46,6 +39,3 @@ class EventRecorder(object):
             (operation, completed, current_datetime)
         )
         self.statistics_db.commit()
-
-    def close(self):
-        self.statistics_db.close()
