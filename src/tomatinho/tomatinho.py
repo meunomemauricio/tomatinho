@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import gi
 import signal
 
-import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Notify', '0.7')
@@ -19,6 +19,14 @@ from . import appinfo
 from . event_recorder import EventRecorder
 
 
+class States(object):
+    """Pseudo Enum to represent the Application states"""
+    IDLE = 1
+    POMODORO = 2
+    SHORT_REST = 3
+    LONG_REST = 4
+
+
 class Tomatinho(object):
     """Pomodoro Timer Application"""
 
@@ -27,12 +35,6 @@ class Tomatinho(object):
     ICON_POMO = resource_filename(__name__, 'icons/tomate-pomo.png')
     ICON_REST_S = resource_filename(__name__, 'icons/tomate-rest-s.png')
     ICON_REST_L = resource_filename(__name__, 'icons/tomate-rest-l.png')
-
-    # States
-    IDLE_STATE = 'Parado'
-    POMO_STATE = 'Tomatando'
-    REST_S_STATE = 'Pausa Curta'
-    REST_L_STATE = 'Pausa Longa'
 
     def __init__(self):
         self.indicator = AppIndicator3.Indicator.new(
@@ -45,7 +47,7 @@ class Tomatinho(object):
         self.menu = None
         self.build_menu()
 
-        self.state = self.IDLE_STATE
+        self.state = States.IDLE
         self.timer_running = False
         self.time_left = 0
 
@@ -94,7 +96,7 @@ class Tomatinho(object):
 
         if self.time_left == 0:
             self.recorder.record(self.state, True)
-            self.state = self.IDLE_STATE
+            self.state = States.IDLE
             self.stop_countdown_timer()
             self.indicator.set_icon(self.ICON_IDLE)
             self.notify('Contador Parado', self.ICON_IDLE)
@@ -103,37 +105,37 @@ class Tomatinho(object):
         return True
 
     def start_pomodoro(self, source):
-        if self.state != self.IDLE_STATE:
+        if self.state != States.IDLE:
             self.recorder.record(self.state, False)
 
-        self.state = self.POMO_STATE
+        self.state = States.POMODORO
         self.start_countdown_timer(25 * 60)
         self.indicator.set_icon(self.ICON_POMO)
         self.notify('Tomatando (25m)', self.ICON_POMO)
 
     def start_short_rest(self, source):
-        if self.state != self.IDLE_STATE:
+        if self.state != States.IDLE:
             self.recorder.record(self.state, False)
 
-        self.state = self.REST_S_STATE
+        self.state = States.SHORT_REST
         self.start_countdown_timer(3 * 60)
         self.indicator.set_icon(self.ICON_REST_S)
         self.notify('Pausa Curta (3m)', self.ICON_REST_S)
 
     def start_long_rest(self, source):
-        if self.state != self.IDLE_STATE:
+        if self.state != States.IDLE:
             self.recorder.record(self.state, False)
 
-        self.state = self.REST_S_STATE
+        self.state = States.LONG_REST
         self.start_countdown_timer(3 * 60)
         self.indicator.set_icon(self.ICON_REST_L)
         self.notify('Pausa Longa (15m)', self.ICON_REST_L)
 
     def stop_timer(self, source):
-        if self.state != self.IDLE_STATE:
+        if self.state != States.IDLE:
             self.recorder.record(self.state, False)
 
-        self.state = self.IDLE_STATE
+        self.state = States.IDLE
         self.stop_countdown_timer()
         self.indicator.set_icon(self.ICON_IDLE)
         self.notify('Contador Parado', self.ICON_IDLE)
@@ -157,7 +159,7 @@ class Tomatinho(object):
         about_dialog.destroy()
 
     def quit(self, source):
-        if self.state != self.IDLE_STATE:
+        if self.state != States.IDLE:
             self.recorder.record(self.state, False)
 
         Gtk.main_quit()

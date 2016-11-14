@@ -9,8 +9,11 @@ class EventRecorder(object):
     """Record events on the Database."""
 
     INSERT_QUERY = 'INSERT INTO statistics VALUES (?, ?, ?)'
-    CREATE_QUERY = ('CREATE TABLE statistics'
-                    '(oper TEXT, completed BOOLEAN, datetime TEXT)')
+    CREATE_QUERY = ('CREATE TABLE statistics ('
+                    'operation INTEGER,'
+                    'completed BOOLEAN,'
+                    'datetime TEXT'
+                    ')')
 
     def __init__(self):
         self.statistics_db = self.get_db_connection()
