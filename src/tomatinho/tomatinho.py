@@ -1,48 +1,30 @@
 # -*- coding: utf-8 -*-
 
-import datetime
-import os.path
-import signal
-import sqlite3
-
 import gi
+import signal
+
 gi.require_version('Gtk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Notify', '0.7')
 
 from gi.repository import Gtk  # noqa: E402
-from gi.repository import GdkPixbuf
+from gi.repository import GdkPixbuf  # noqa: E402
 from gi.repository import AppIndicator3  # noqa: E402
 from gi.repository import Notify  # noqa: E402
 from gi.repository import GObject  # noqa: E402
 
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename  # noqa: E402
 
-from . import appinfo
-
-CUR_DIR = os.path.dirname(os.path.realpath(__file__))
-HOME_DIR = os.path.expanduser('~')
-TOMATINHO_DIR = os.path.join(HOME_DIR, '.tomatinho')
+from . import appinfo  # noqa: E402
+from . event_recorder import EventRecorder  # noqa: E402
 
 
-def start_database():
-    if not os.path.exists(TOMATINHO_DIR):
-        os.makedirs(TOMATINHO_DIR)
-
-    conn = sqlite3.connect(os.path.join(TOMATINHO_DIR, 'tomatinho.db'))
-    cursor = conn.cursor()
-
-    # Create Statistics Table
-    sql_cmd = ('CREATE TABLE statistics'
-               '(oper TEXT, completed BOOLEAN, datetime TEXT)')
-    try:
-        cursor.execute(sql_cmd)
-        conn.commit()
-        conn.close()
-
-    except sqlite3.OperationalError:
-        # Table already Exists
-        pass
+class States(object):
+    """Pseudo Enum to represent the Application states"""
+    IDLE = 1
+    POMODORO = 2
+    SHORT_REST = 3
+    LONG_REST = 4
 
 
 class Tomatinho(object):
@@ -53,12 +35,6 @@ class Tomatinho(object):
     ICON_POMO = resource_filename(__name__, 'icons/tomate-pomo.png')
     ICON_REST_S = resource_filename(__name__, 'icons/tomate-rest-s.png')
     ICON_REST_L = resource_filename(__name__, 'icons/tomate-rest-l.png')
-
-    # States
-    IDLE_STATE = 'Parado'
-    POMO_STATE = 'Tomatando'
-    REST_S_STATE = 'Pausa Curta'
-    REST_L_STATE = 'Pausa Longa'
 
     def __init__(self):
         self.indicator = AppIndicator3.Indicator.new(
@@ -71,14 +47,13 @@ class Tomatinho(object):
         self.menu = None
         self.build_menu()
 
-        self.state = self.IDLE_STATE
+        self.state = States.IDLE
         self.timer_running = False
         self.time_left = 0
 
         self.countdown_timer_id = None
 
-        self.statistics_db = sqlite3.connect(
-            os.path.join(TOMATINHO_DIR, 'tomatinho.db'))
+        self.recorder = EventRecorder()
 
     def build_menu(self):
         self.menu = Gtk.Menu()
@@ -120,8 +95,8 @@ class Tomatinho(object):
         self.time_left -= 1
 
         if self.time_left == 0:
-            self.record_statistic(self.state, completed=True)
-            self.state = self.IDLE_STATE
+            self.recorder.record(self.state, True)
+            self.state = States.IDLE
             self.stop_countdown_timer()
             self.indicator.set_icon(self.ICON_IDLE)
             self.notify('Contador Parado', self.ICON_IDLE)
@@ -130,51 +105,43 @@ class Tomatinho(object):
         return True
 
     def start_pomodoro(self, source):
-        if self.state != self.IDLE_STATE:
-            self.record_statistic(self.state, completed=False)
+        if self.state != States.IDLE:
+            self.recorder.record(self.state, False)
 
-        self.state = self.POMO_STATE
+        self.state = States.POMODORO
         self.start_countdown_timer(25 * 60)
         self.indicator.set_icon(self.ICON_POMO)
         self.notify('Tomatando (25m)', self.ICON_POMO)
 
     def start_short_rest(self, source):
-        if self.state != self.IDLE_STATE:
-            self.record_statistic(self.state, completed=False)
+        if self.state != States.IDLE:
+            self.recorder.record(self.state, False)
 
-        self.state = self.REST_S_STATE
+        self.state = States.SHORT_REST
         self.start_countdown_timer(3 * 60)
         self.indicator.set_icon(self.ICON_REST_S)
         self.notify('Pausa Curta (3m)', self.ICON_REST_S)
 
     def start_long_rest(self, source):
-        if self.state != self.IDLE_STATE:
-            self.record_statistic(self.state, completed=False)
+        if self.state != States.IDLE:
+            self.recorder.record(self.state, False)
 
-        self.state = self.REST_S_STATE
+        self.state = States.LONG_REST
         self.start_countdown_timer(3 * 60)
         self.indicator.set_icon(self.ICON_REST_L)
         self.notify('Pausa Longa (15m)', self.ICON_REST_L)
 
     def stop_timer(self, source):
-        if self.state != self.IDLE_STATE:
-            self.record_statistic(self.state, completed=False)
+        if self.state != States.IDLE:
+            self.recorder.record(self.state, False)
 
-        self.state = self.IDLE_STATE
+        self.state = States.IDLE
         self.stop_countdown_timer()
         self.indicator.set_icon(self.ICON_IDLE)
         self.notify('Contador Parado', self.ICON_IDLE)
 
     def notify(self, message, icon):
         Notify.Notification.new('Tomatinho', message, icon).show()
-
-    def record_statistic(self, operation, completed):
-        current_datetime = datetime.datetime.now()
-        self.statistics_db.cursor().execute(
-            'INSERT INTO statistics VALUES (?, ?, ?)',
-            (operation, completed, current_datetime)
-        )
-        self.statistics_db.commit()
 
     def about_dialog(self, source):
         about_dialog = Gtk.AboutDialog()
@@ -192,8 +159,8 @@ class Tomatinho(object):
         about_dialog.destroy()
 
     def quit(self, source):
-        if self.state != self.IDLE_STATE:
-            self.record_statistic(self.state, completed=False)
+        if self.state != States.IDLE:
+            self.recorder.record(self.state, False)
 
         Gtk.main_quit()
 
@@ -201,7 +168,6 @@ class Tomatinho(object):
 def main():
     # Enable quiting the app with ^C
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    start_database()
     Tomatinho()
     Gtk.main()
 
