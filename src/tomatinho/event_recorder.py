@@ -12,7 +12,7 @@ class EventRecorder(object):
     CREATE_QUERY = ('CREATE TABLE statistics ('
                     'operation INTEGER,'
                     'completed BOOLEAN,'
-                    'datetime TEXT'
+                    'datetime TIMESTAMP'
                     ')')
 
     def __init__(self):
