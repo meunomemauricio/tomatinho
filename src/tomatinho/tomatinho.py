@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
-import os.path
 import signal
-import sqlite3
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -19,30 +16,7 @@ from gi.repository import GObject  # noqa: E402
 from pkg_resources import resource_filename
 
 from . import appinfo
-
-CUR_DIR = os.path.dirname(os.path.realpath(__file__))
-HOME_DIR = os.path.expanduser('~')
-TOMATINHO_DIR = os.path.join(HOME_DIR, '.tomatinho')
-
-
-def start_database():
-    if not os.path.exists(TOMATINHO_DIR):
-        os.makedirs(TOMATINHO_DIR)
-
-    conn = sqlite3.connect(os.path.join(TOMATINHO_DIR, 'tomatinho.db'))
-    cursor = conn.cursor()
-
-    # Create Statistics Table
-    sql_cmd = ('CREATE TABLE statistics'
-               '(oper TEXT, completed BOOLEAN, datetime TEXT)')
-    try:
-        cursor.execute(sql_cmd)
-        conn.commit()
-        conn.close()
-
-    except sqlite3.OperationalError:
-        # Table already Exists
-        pass
+from . event_recorder import EventRecorder
 
 
 class Tomatinho(object):
@@ -77,8 +51,7 @@ class Tomatinho(object):
 
         self.countdown_timer_id = None
 
-        self.statistics_db = sqlite3.connect(
-            os.path.join(TOMATINHO_DIR, 'tomatinho.db'))
+        self.recorder = EventRecorder()
 
     def build_menu(self):
         self.menu = Gtk.Menu()
@@ -120,7 +93,7 @@ class Tomatinho(object):
         self.time_left -= 1
 
         if self.time_left == 0:
-            self.record_statistic(self.state, completed=True)
+            self.recorder.record(self.state, True)
             self.state = self.IDLE_STATE
             self.stop_countdown_timer()
             self.indicator.set_icon(self.ICON_IDLE)
@@ -131,7 +104,7 @@ class Tomatinho(object):
 
     def start_pomodoro(self, source):
         if self.state != self.IDLE_STATE:
-            self.record_statistic(self.state, completed=False)
+            self.recorder.record(self.state, False)
 
         self.state = self.POMO_STATE
         self.start_countdown_timer(25 * 60)
@@ -140,7 +113,7 @@ class Tomatinho(object):
 
     def start_short_rest(self, source):
         if self.state != self.IDLE_STATE:
-            self.record_statistic(self.state, completed=False)
+            self.recorder.record(self.state, False)
 
         self.state = self.REST_S_STATE
         self.start_countdown_timer(3 * 60)
@@ -149,7 +122,7 @@ class Tomatinho(object):
 
     def start_long_rest(self, source):
         if self.state != self.IDLE_STATE:
-            self.record_statistic(self.state, completed=False)
+            self.recorder.record(self.state, False)
 
         self.state = self.REST_S_STATE
         self.start_countdown_timer(3 * 60)
@@ -158,7 +131,7 @@ class Tomatinho(object):
 
     def stop_timer(self, source):
         if self.state != self.IDLE_STATE:
-            self.record_statistic(self.state, completed=False)
+            self.recorder.record(self.state, False)
 
         self.state = self.IDLE_STATE
         self.stop_countdown_timer()
@@ -167,14 +140,6 @@ class Tomatinho(object):
 
     def notify(self, message, icon):
         Notify.Notification.new('Tomatinho', message, icon).show()
-
-    def record_statistic(self, operation, completed):
-        current_datetime = datetime.datetime.now()
-        self.statistics_db.cursor().execute(
-            'INSERT INTO statistics VALUES (?, ?, ?)',
-            (operation, completed, current_datetime)
-        )
-        self.statistics_db.commit()
 
     def about_dialog(self, source):
         about_dialog = Gtk.AboutDialog()
@@ -193,7 +158,7 @@ class Tomatinho(object):
 
     def quit(self, source):
         if self.state != self.IDLE_STATE:
-            self.record_statistic(self.state, completed=False)
+            self.recorder.record(self.state, False)
 
         Gtk.main_quit()
 
@@ -201,7 +166,6 @@ class Tomatinho(object):
 def main():
     # Enable quiting the app with ^C
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    start_database()
     Tomatinho()
     Gtk.main()
 
