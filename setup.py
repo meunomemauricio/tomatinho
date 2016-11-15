@@ -4,7 +4,7 @@ import sys
 from setuptools import setup, find_packages
 
 sys.path.append('src')
-from tomatinho import appinfo
+from tomatinho import appinfo  # noqa: E402
 
 with open('README.md') as readme_file:
     readme = readme_file.read()
@@ -17,7 +17,7 @@ setup(
     license=appinfo.LICENSE,
     author=appinfo.AUTHOR,
     url=appinfo.SITE,
-    package_dir={'':'src'},
+    package_dir={'': 'src'},
     packages=find_packages('src'),
     classifiers=[
         'Programming Language :: Python :: 3',
