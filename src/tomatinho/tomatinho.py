@@ -144,7 +144,7 @@ class Tomatinho(object):
         Notify.Notification.new('Tomatinho', message, icon).show()
 
     def about_dialog(self, source):
-        about_dialog = Gtk.AboutDialog()
+        about_dialog = Gtk.AboutDialog(parent=Gtk.Window())
         about_dialog.set_destroy_with_parent(True)
         pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.ICON_POMO)
         about_dialog.set_logo(pixbuf)
