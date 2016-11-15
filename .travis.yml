@@ -1,11 +1,13 @@
+dist: trusty
 sudo: required
 language: python
-python: "3.5"
+python:
+  - "3.4_with_system_site_packages"
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y python3-gi
 install:
-  - pip install -r requirements.test.txt
-  - pip install flake8
+  - pip3 install -r requirements.test.txt
+  - pip3 install flake8
 before_script: flake8
 script: pytest
