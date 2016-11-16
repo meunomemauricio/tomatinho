@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Main Application module."""
 
 import gi
 import signal
@@ -19,18 +20,17 @@ from . event_recorder import EventRecorder  # noqa: E402
 from . state_timer import StateTimer  # noqa: E402
 
 
-class States(object):
-    """Pseudo Enum to represent the Application states"""
+class States:
+    """Enum representing the Application states."""
     IDLE = 1
     POMODORO = 2
     SHORT_REST = 3
     LONG_REST = 4
 
 
-class Tomatinho(object):
+class Tomatinho:
     """Pomodoro Timer Application"""
 
-    # Icons
     ICON_IDLE = resource_filename(__name__, 'icons/tomate-idle.png')
     ICON_POMO = resource_filename(__name__, 'icons/tomate-pomo.png')
     ICON_REST_S = resource_filename(__name__, 'icons/tomate-rest-s.png')
@@ -119,7 +119,7 @@ class Tomatinho(object):
         self.notify('Contador Parado', self.ICON_IDLE)
 
     def notify(self, message, icon):
-        Notify.Notification.new('Tomatinho', message, icon).show()
+        Notify.Notification.new(appinfo.NAME, message, icon).show()
 
     def about_dialog(self, source):
         about_dialog = Gtk.AboutDialog(parent=Gtk.Window())
@@ -139,7 +139,6 @@ class Tomatinho(object):
     def quit(self, source):
         if self.state != States.IDLE:
             self.recorder.record(self.state, False)
-
         Gtk.main_quit()
 
 

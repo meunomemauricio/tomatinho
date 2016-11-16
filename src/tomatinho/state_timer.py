@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+"""Timer used to change the application state."""
 
 from gi.repository import GLib  # noqa: E402
 

@@ -1,4 +1,6 @@
-"""This module is responsable for storing event information on the DB."""
+# -*- coding: utf-8 -*-
+"""This module is responsible for storing event information on the DB."""
+
 import datetime
 import sqlite3
 import os.path
@@ -6,7 +8,7 @@ import os.path
 from . import appinfo
 
 
-class EventRecorder(object):
+class EventRecorder:
     """Record events on the Database."""
 
     INSERT_QUERY = 'INSERT INTO statistics VALUES (?, ?, ?)'
