@@ -4,7 +4,7 @@ init:
 	pip install -r requirements.test.txt
 
 test:
-	rm .coverage
-	pytest --cov=src/tomatinho
+	rm -f .coverage
+	python3 -m pytest --cov=src/tomatinho
 
 .PHONY: all test clean
