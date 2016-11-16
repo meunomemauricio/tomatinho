@@ -11,12 +11,12 @@ from gi.repository import Gtk  # noqa: E402
 from gi.repository import GdkPixbuf  # noqa: E402
 from gi.repository import AppIndicator3  # noqa: E402
 from gi.repository import Notify  # noqa: E402
-from gi.repository import GObject  # noqa: E402
 
 from pkg_resources import resource_filename  # noqa: E402
 
 from . import appinfo  # noqa: E402
 from . event_recorder import EventRecorder  # noqa: E402
+from . state_timer import StateTimer  # noqa: E402
 
 
 class States(object):
@@ -48,12 +48,9 @@ class Tomatinho(object):
         self.build_menu()
 
         self.state = States.IDLE
-        self.timer_running = False
-        self.time_left = 0
-
-        self.countdown_timer_id = None
 
         self.recorder = EventRecorder()
+        self.timer = StateTimer()
 
     def build_menu(self):
         self.menu = Gtk.Menu()
@@ -75,41 +72,12 @@ class Tomatinho(object):
         menu_item.connect('activate', action)
         self.menu.append(menu_item)
 
-    def start_countdown_timer(self, start_time):
-        if self.timer_running:
-            GObject.source_remove(self.countdown_timer_id)
-
-        # 1s Timer
-        self.countdown_timer_id = GObject.timeout_add(1000, self.countdown)
-
-        # Time left in seconds
-        self.time_left = start_time
-        self.timer_running = True
-
-    def stop_countdown_timer(self):
-        if self.timer_running:
-            GObject.source_remove(self.countdown_timer_id)
-            self.timer_running = False
-
-    def countdown(self):
-        self.time_left -= 1
-
-        if self.time_left == 0:
-            self.recorder.record(self.state, True)
-            self.state = States.IDLE
-            self.stop_countdown_timer()
-            self.indicator.set_icon(self.ICON_IDLE)
-            self.notify('Contador Parado', self.ICON_IDLE)
-            return False
-
-        return True
-
     def start_pomodoro(self, source):
         if self.state != States.IDLE:
             self.recorder.record(self.state, False)
 
         self.state = States.POMODORO
-        self.start_countdown_timer(25 * 60)
+        self.timer.start(25 * 60 * 1000, self.stop_timer)
         self.indicator.set_icon(self.ICON_POMO)
         self.notify('Tomatando (25m)', self.ICON_POMO)
 
@@ -118,7 +86,7 @@ class Tomatinho(object):
             self.recorder.record(self.state, False)
 
         self.state = States.SHORT_REST
-        self.start_countdown_timer(3 * 60)
+        self.timer.start(5 * 60 * 1000, self.stop_timer)
         self.indicator.set_icon(self.ICON_REST_S)
         self.notify('Pausa Curta (3m)', self.ICON_REST_S)
 
@@ -127,16 +95,26 @@ class Tomatinho(object):
             self.recorder.record(self.state, False)
 
         self.state = States.LONG_REST
-        self.start_countdown_timer(3 * 60)
+        self.timer.start(15 * 60 * 1000, self.stop_timer)
         self.indicator.set_icon(self.ICON_REST_L)
         self.notify('Pausa Longa (15m)', self.ICON_REST_L)
 
-    def stop_timer(self, source):
-        if self.state != States.IDLE:
+    def stop_timer(self, source=None):
+        """Stop timer and go back to the idle state.
+
+        If no ``source`` is specified, this method records that the last
+        operation was finished successfully, considering that it was probably
+        called directly and not from the menu button. If it's specified, the
+        method was called from the app menu and it records the last operation
+        as interrupted.
+        """
+        if source is None:
+            self.recorder.record(self.state, True)
+        elif self.state != States.IDLE:
             self.recorder.record(self.state, False)
 
         self.state = States.IDLE
-        self.stop_countdown_timer()
+        self.timer.stop()
         self.indicator.set_icon(self.ICON_IDLE)
         self.notify('Contador Parado', self.ICON_IDLE)
 
