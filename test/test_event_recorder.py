@@ -6,8 +6,8 @@ import sys
 from freezegun import freeze_time
 
 sys.path.append('src')
-from tomatinho import event_recorder  # noqa: E402
-from tomatinho.tomatinho import States  # noqa: E402
+from tomatinho import event_recorder
+from tomatinho.tomatinho import States
 
 
 class TestEventRecorder:

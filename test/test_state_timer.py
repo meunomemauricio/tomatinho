@@ -6,7 +6,7 @@ from gi.repository import GLib
 from pytest import fixture
 
 sys.path.append('src')
-from tomatinho.state_timer import StateTimer  # noqa: E402
+from tomatinho.state_timer import StateTimer
 
 
 RUN_TIMEOUT = 5

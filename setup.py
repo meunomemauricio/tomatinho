@@ -4,7 +4,7 @@ import sys
 from setuptools import setup, find_packages
 
 sys.path.append('src')
-from tomatinho import appinfo  # noqa: E402
+from tomatinho import appinfo
 
 with open('README.md') as readme_file:
     readme = readme_file.read()
