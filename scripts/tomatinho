@@ -1,0 +1,6 @@
+#!/usr/bin/python3
+
+from tomatinho import tomatinho
+
+if __name__ == '__main__':
+    tomatinho.main()

@@ -2,6 +2,7 @@
 """Main Application module."""
 
 import gi
+import os.path
 import signal
 
 gi.require_version('Gtk', '3.0')
@@ -12,8 +13,6 @@ from gi.repository import Gtk
 from gi.repository import GdkPixbuf
 from gi.repository import AppIndicator3
 from gi.repository import Notify
-
-from pkg_resources import resource_filename
 
 from . import appinfo
 from . event_recorder import EventRecorder
@@ -31,10 +30,10 @@ class States:
 class Tomatinho:
     """Pomodoro Timer Application"""
 
-    ICON_IDLE = resource_filename(__name__, 'icons/tomate-idle.png')
-    ICON_POMO = resource_filename(__name__, 'icons/tomate-pomo.png')
-    ICON_REST_S = resource_filename(__name__, 'icons/tomate-rest-s.png')
-    ICON_REST_L = resource_filename(__name__, 'icons/tomate-rest-l.png')
+    ICON_IDLE = os.path.join(appinfo.ICONS_DIR, 'tomate-idle.png')
+    ICON_POMO = os.path.join(appinfo.ICONS_DIR, 'tomate-pomo.png')
+    ICON_REST_S = os.path.join(appinfo.ICONS_DIR, 'tomate-rest-s.png')
+    ICON_REST_L = os.path.join(appinfo.ICONS_DIR, 'tomate-rest-l.png')
 
     def __init__(self):
         self.indicator = AppIndicator3.Indicator.new(

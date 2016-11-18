@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from setuptools import setup, find_packages
+from distutils.core import setup
 
 sys.path.append('src')
 from tomatinho import appinfo
@@ -17,8 +17,6 @@ setup(
     license=appinfo.LICENSE,
     author=appinfo.AUTHOR,
     url=appinfo.SITE,
-    package_dir={'': 'src'},
-    packages=find_packages('src'),
     classifiers=[
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
@@ -30,12 +28,10 @@ setup(
         'Natural Language :: English',
         'Topic :: Utilities',
     ],
-    entry_points={
-        'gui_scripts': [
-            'tomatinho=tomatinho.tomatinho:main',
-        ]
-    },
-    data_files=[('tomatinho/icons',
+    package_dir={'': 'src'},
+    packages=['tomatinho'],
+    scripts=['scripts/tomatinho'],
+    data_files=[('share/tomatinho/icons',
                  ['data/icons/tomate-idle.png',
                   'data/icons/tomate-pomo.png',
                   'data/icons/tomate-rest-l.png',

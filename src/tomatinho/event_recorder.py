@@ -28,9 +28,9 @@ class EventRecorder:
 
         :return: New connection to the DB
         """
-        if not os.path.exists(appinfo.APP_DIR):
-            os.makedirs(appinfo.APP_DIR)
-        conn = sqlite3.connect(os.path.join(appinfo.APP_DIR, 'tomatinho.db'))
+        if not os.path.exists(appinfo.USER_DIR):
+            os.makedirs(appinfo.USER_DIR)
+        conn = sqlite3.connect(os.path.join(appinfo.USER_DIR, 'tomatinho.db'))
         conn.cursor().execute(self.CREATE_QUERY)
         conn.commit()
         return conn

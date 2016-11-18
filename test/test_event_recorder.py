@@ -15,7 +15,7 @@ class TestEventRecorder:
     def test_app_dir_creation(self, monkeypatch, tmpdir):
         """Should create Application directory if it does not exist."""
         dir = os.path.join(str(tmpdir.realpath()), 'tomatinho')
-        monkeypatch.setattr(event_recorder.appinfo, 'APP_DIR', dir)
+        monkeypatch.setattr(event_recorder.appinfo, 'USER_DIR', dir)
 
         event_recorder.EventRecorder()
 
@@ -24,7 +24,7 @@ class TestEventRecorder:
     def test_db_file_creation(self, monkeypatch, tmpdir):
         """Should create a new DB file."""
         dir = str(tmpdir.realpath())
-        monkeypatch.setattr(event_recorder.appinfo, 'APP_DIR', dir)
+        monkeypatch.setattr(event_recorder.appinfo, 'USER_DIR', dir)
 
         event_recorder.EventRecorder()
 
@@ -33,7 +33,7 @@ class TestEventRecorder:
     def test_table_creation(self, monkeypatch, tmpdir):
         """Check if the statistics table is being created."""
         dir = str(tmpdir.realpath())
-        monkeypatch.setattr(event_recorder.appinfo, 'APP_DIR', dir)
+        monkeypatch.setattr(event_recorder.appinfo, 'USER_DIR', dir)
 
         recorder = event_recorder.EventRecorder()
 
@@ -42,7 +42,7 @@ class TestEventRecorder:
     def test_table_already_exists(self, monkeypatch, tmpdir):
         """Test what happens when the statistics table already exists."""
         dir = str(tmpdir.realpath())
-        monkeypatch.setattr(event_recorder.appinfo, 'APP_DIR', dir)
+        monkeypatch.setattr(event_recorder.appinfo, 'USER_DIR', dir)
         create_db_table(dir)
 
         assert event_recorder.EventRecorder()
@@ -51,7 +51,7 @@ class TestEventRecorder:
     def test_completed_record(self, monkeypatch, tmpdir):
         """Create a new record on the DB."""
         dir = str(tmpdir.realpath())
-        monkeypatch.setattr(event_recorder.appinfo, 'APP_DIR', dir)
+        monkeypatch.setattr(event_recorder.appinfo, 'USER_DIR', dir)
         recorder = event_recorder.EventRecorder()
 
         recorder.record(States.POMODORO, True)

@@ -17,4 +17,6 @@ SITE = 'https://github.com/meunomemauricio/tomatinho'
 
 # Application Directories
 HOME_DIR = os.path.expanduser('~')
-APP_DIR = os.path.join(HOME_DIR, '.tomatinho')
+USER_DIR = os.path.join(HOME_DIR, '.tomatinho')
+APP_DIR = '/usr/share/tomatinho'
+ICONS_DIR = os.path.join(APP_DIR, 'icons')
