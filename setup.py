@@ -53,7 +53,7 @@ class my_build(build):
             path = os.path.join(MO_DIR, lang, MO_FILENAME)
             clear_path(path)
             cmd = ['msgfmt', po_file, '-o', path]
-            subprocess.run(cmd)
+            subprocess.call(cmd)
 
 
 def get_locale_files():
