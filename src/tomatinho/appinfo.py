@@ -20,3 +20,4 @@ HOME_DIR = os.path.expanduser('~')
 USER_DIR = os.path.join(HOME_DIR, '.tomatinho')
 APP_DIR = '/usr/share/tomatinho'
 ICONS_DIR = os.path.join(APP_DIR, 'icons')
+LOCALE_DIR = '/usr/share/locale/'

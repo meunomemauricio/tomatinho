@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Main Application module."""
 
+import gettext
 import gi
 import os.path
 import signal
@@ -17,6 +18,14 @@ from gi.repository import Notify
 from . import appinfo
 from . event_recorder import EventRecorder
 from . state_timer import StateTimer
+
+gettext.bindtextdomain(appinfo.ID, appinfo.LOCALE_DIR)
+gettext.textdomain(appinfo.ID)
+_ = gettext.gettext
+
+POMODORO = 25
+SHORT_REST = 5
+LONG_REST = 15
 
 
 class States:
@@ -53,14 +62,14 @@ class Tomatinho:
 
     def build_menu(self):
         self.menu = Gtk.Menu()
-        self.add_new_menu_item('Tomatar', self.start_pomodoro)
-        self.add_new_menu_item('Pausa Curta', self.start_short_rest)
-        self.add_new_menu_item('Pausa Longa', self.start_long_rest)
-        self.add_new_menu_item('Parar', self.stop_timer)
+        self.add_new_menu_item(_('Pomodoro'), self.start_pomodoro)
+        self.add_new_menu_item(_('Short Pause'), self.start_short_rest)
+        self.add_new_menu_item(_('Long Break'), self.start_long_rest)
+        self.add_new_menu_item(_('Stop'), self.stop_timer)
         self.menu.append(Gtk.SeparatorMenuItem())
-        self.add_new_menu_item('Sobre', self.about_dialog)
+        self.add_new_menu_item(_('About'), self.about_dialog)
         self.menu.append(Gtk.SeparatorMenuItem())
-        self.add_new_menu_item('Sair', self.quit)
+        self.add_new_menu_item(_('Quit'), self.quit)
         self.menu.show_all()
 
         self.indicator.set_menu(self.menu)
@@ -76,27 +85,30 @@ class Tomatinho:
             self.recorder.record(self.state, False)
 
         self.state = States.POMODORO
-        self.timer.start(25 * 60 * 1000, self.stop_timer)
+        self.timer.start(POMODORO * 60 * 1000, self.stop_timer)
         self.indicator.set_icon(self.ICON_POMO)
-        self.notify('Tomatando (25m)', self.ICON_POMO)
+        msg = _('Pomodoro ({duration}m)').format(duration=POMODORO)
+        self.notify(msg, self.ICON_POMO)
 
     def start_short_rest(self, source):
         if self.state != States.IDLE:
             self.recorder.record(self.state, False)
 
         self.state = States.SHORT_REST
-        self.timer.start(5 * 60 * 1000, self.stop_timer)
+        self.timer.start(SHORT_REST * 60 * 1000, self.stop_timer)
         self.indicator.set_icon(self.ICON_REST_S)
-        self.notify('Pausa Curta (3m)', self.ICON_REST_S)
+        msg = _('Short Pause ({duration}m)').format(duration=SHORT_REST)
+        self.notify(msg, self.ICON_REST_S)
 
     def start_long_rest(self, source):
         if self.state != States.IDLE:
             self.recorder.record(self.state, False)
 
         self.state = States.LONG_REST
-        self.timer.start(15 * 60 * 1000, self.stop_timer)
+        self.timer.start(LONG_REST * 60 * 1000, self.stop_timer)
         self.indicator.set_icon(self.ICON_REST_L)
-        self.notify('Pausa Longa (15m)', self.ICON_REST_L)
+        msg = _('Long Break ({duration}m)').format(duration=LONG_REST)
+        self.notify(msg, self.ICON_REST_L)
 
     def stop_timer(self, source=None):
         """Stop timer and go back to the idle state.
@@ -115,7 +127,7 @@ class Tomatinho:
         self.state = States.IDLE
         self.timer.stop()
         self.indicator.set_icon(self.ICON_IDLE)
-        self.notify('Contador Parado', self.ICON_IDLE)
+        self.notify(_('Stopped'), self.ICON_IDLE)
 
     def notify(self, message, icon):
         Notify.Notification.new(appinfo.NAME, message, icon).show()

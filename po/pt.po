@@ -1,0 +1,62 @@
+# Tomatinho main interface portuguese translation.
+# Copyright (C) 2016 Mauricio Freitas
+# This file is distributed under the same license as the Tomatinho package.
+# Mauricio Freitas <meunomemauricio@github>, 2016
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-11-18 20:20-0200\n"
+"PO-Revision-Date: 2016-11-18 20:43-0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"Last-Translator: Mauricio Freitas <meunomemauricio@github>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: pt\n"
+
+#: ../src/tomatinho/tomatinho.py:61
+msgid "Pomodoro"
+msgstr "Pomodoro"
+
+#: ../src/tomatinho/tomatinho.py:62
+msgid "Short Pause"
+msgstr "Pausa Curta"
+
+#: ../src/tomatinho/tomatinho.py:63
+msgid "Long Break"
+msgstr "Pausa Longa"
+
+#: ../src/tomatinho/tomatinho.py:64
+msgid "Stop"
+msgstr "Parar"
+
+#: ../src/tomatinho/tomatinho.py:66
+msgid "About"
+msgstr "Sobre"
+
+#: ../src/tomatinho/tomatinho.py:68
+msgid "Quit"
+msgstr "Sair"
+
+#: ../src/tomatinho/tomatinho.py:86
+#, python-brace-format
+msgid "Pomodoro ({duration}m)"
+msgstr "Pomodoro ({duration}m)"
+
+#: ../src/tomatinho/tomatinho.py:96
+#, python-brace-format
+msgid "Short Pause ({duration}m)"
+msgstr "Pausa Curta ({duration}m)"
+
+#: ../src/tomatinho/tomatinho.py:106
+#, python-brace-format
+msgid "Long Break ({duration}m)"
+msgstr "Pausa Longa ({duration}m)"
+
+#: ../src/tomatinho/tomatinho.py:126
+msgid "Stopped"
+msgstr "Parado"
