@@ -10,11 +10,11 @@ gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Notify', '0.7')
 
 from gi.repository import Gtk
-from gi.repository import GdkPixbuf
 from gi.repository import AppIndicator3
 from gi.repository import Notify
 
 from . import appinfo
+from . about_dialog import about_dialog
 from . event_recorder import EventRecorder
 from . locale import _
 from . state_timer import StateTimer
@@ -63,7 +63,7 @@ class Tomatinho:
         self.add_new_menu_item(_('Long Break'), self.start_long_rest)
         self.add_new_menu_item(_('Stop'), self.stop_timer)
         self.menu.append(Gtk.SeparatorMenuItem())
-        self.add_new_menu_item(_('About'), self.about_dialog)
+        self.add_new_menu_item(_('About'), about_dialog)
         self.menu.append(Gtk.SeparatorMenuItem())
         self.add_new_menu_item(_('Quit'), self.quit)
         self.menu.show_all()
@@ -127,21 +127,6 @@ class Tomatinho:
 
     def notify(self, message, icon):
         Notify.Notification.new(appinfo.NAME, message, icon).show()
-
-    def about_dialog(self, source):
-        about_dialog = Gtk.AboutDialog(parent=Gtk.Window())
-        about_dialog.set_destroy_with_parent(True)
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.ICON_POMO)
-        about_dialog.set_logo(pixbuf)
-        about_dialog.set_program_name(appinfo.NAME)
-        about_dialog.set_version(appinfo.VERSION)
-        about_dialog.set_copyright(appinfo.COPYRIGHT)
-        about_dialog.set_comments(appinfo.DESCRIPTION)
-        about_dialog.set_authors([appinfo.AUTHOR])
-        about_dialog.set_license_type(Gtk.License.MIT_X11)
-        about_dialog.set_website(appinfo.SITE)
-        about_dialog.run()
-        about_dialog.destroy()
 
     def quit(self, source):
         if self.state != States.IDLE:
