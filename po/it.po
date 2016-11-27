@@ -1,0 +1,47 @@
+# Tomatinho main interface italian translation.
+# Copyright (C) 2016 Mauricio Freitas
+# This file is distributed under the same license as the Tomatinho package.
+# Mauricio Freitas <meunomemauricio@github>, 2016
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-11-27 15:11-0200\n"
+"PO-Revision-Date: 2016-11-18 20:43-0200\n"
+"Last-Translator: Mauricio Freitas <meunomemauricio@github>\n"
+"Language-Team: \n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../src/tomatinho/tomatinho.py:65 ../src/tomatinho/tomatinho.py:90
+msgid "Pomodoro"
+msgstr "Pomodoro"
+
+#: ../src/tomatinho/tomatinho.py:66 ../src/tomatinho/tomatinho.py:100
+msgid "Short Pause"
+msgstr "Breve Pausa"
+
+#: ../src/tomatinho/tomatinho.py:67 ../src/tomatinho/tomatinho.py:110
+msgid "Long Break"
+msgstr "Lunga Pausa"
+
+#: ../src/tomatinho/tomatinho.py:68
+msgid "Stop"
+msgstr "Ferma"
+
+#: ../src/tomatinho/tomatinho.py:70
+msgid "About"
+msgstr "Informazioni"
+
+#: ../src/tomatinho/tomatinho.py:72
+msgid "Quit"
+msgstr "Esci"
+
+#: ../src/tomatinho/tomatinho.py:130
+msgid "Stopped"
+msgstr "Fermato"
