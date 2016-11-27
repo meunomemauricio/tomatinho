@@ -1,5 +1,6 @@
 """Module to store the application state Enum"""
 
+
 class States:
     """Enum representing the Application states."""
     IDLE = 1
