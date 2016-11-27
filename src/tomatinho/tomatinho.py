@@ -17,18 +17,11 @@ from . about_dialog import about_dialog
 from . event_recorder import EventRecorder
 from . locale import _
 from . state_timer import StateTimer
+from . states import States
 
 POMODORO = 25
 SHORT_REST = 5
 LONG_REST = 15
-
-
-class States:
-    """Enum representing the Application states."""
-    IDLE = 1
-    POMODORO = 2
-    SHORT_REST = 3
-    LONG_REST = 4
 
 
 class Tomatinho:
