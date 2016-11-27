@@ -1,53 +1,31 @@
 # -*- coding: utf-8 -*-
 """Main Application module."""
 
-import gettext
-import gi
-import os.path
 import signal
 
-gi.require_version('Gtk', '3.0')
-gi.require_version('AppIndicator3', '0.1')
-gi.require_version('Notify', '0.7')
-
 from gi.repository import Gtk
-from gi.repository import GdkPixbuf
 from gi.repository import AppIndicator3
 from gi.repository import Notify
 
 from . import appinfo
+from . about_dialog import about_dialog
 from . event_recorder import EventRecorder
+from . locale import _
 from . state_timer import StateTimer
-
-gettext.bindtextdomain(appinfo.ID, appinfo.LOCALE_DIR)
-gettext.textdomain(appinfo.ID)
-_ = gettext.gettext
+from . states import States
 
 POMODORO = 25
 SHORT_REST = 5
 LONG_REST = 15
 
 
-class States:
-    """Enum representing the Application states."""
-    IDLE = 1
-    POMODORO = 2
-    SHORT_REST = 3
-    LONG_REST = 4
-
-
 class Tomatinho:
     """Pomodoro Timer Application"""
-
-    ICON_IDLE = os.path.join(appinfo.ICONS_DIR, 'tomate-idle.png')
-    ICON_POMO = os.path.join(appinfo.ICONS_DIR, 'tomate-pomo.png')
-    ICON_REST_S = os.path.join(appinfo.ICONS_DIR, 'tomate-rest-s.png')
-    ICON_REST_L = os.path.join(appinfo.ICONS_DIR, 'tomate-rest-l.png')
 
     def __init__(self):
         self.indicator = AppIndicator3.Indicator.new(
             appinfo.ID,
-            self.ICON_IDLE,
+            appinfo.ICON_IDLE,
             AppIndicator3.IndicatorCategory.APPLICATION_STATUS,
         )
         self.indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
@@ -67,7 +45,7 @@ class Tomatinho:
         self.add_new_menu_item(_('Long Break'), self.start_long_rest)
         self.add_new_menu_item(_('Stop'), self.stop_timer)
         self.menu.append(Gtk.SeparatorMenuItem())
-        self.add_new_menu_item(_('About'), self.about_dialog)
+        self.add_new_menu_item(_('About'), about_dialog)
         self.menu.append(Gtk.SeparatorMenuItem())
         self.add_new_menu_item(_('Quit'), self.quit)
         self.menu.show_all()
@@ -86,9 +64,9 @@ class Tomatinho:
 
         self.state = States.POMODORO
         self.timer.start(POMODORO * 60 * 1000, self.stop_timer)
-        self.indicator.set_icon(self.ICON_POMO)
+        self.indicator.set_icon(appinfo.ICON_POMO)
         msg = _('Pomodoro') + ' ({duration}m)'.format(duration=POMODORO)
-        self.notify(msg, self.ICON_POMO)
+        self.notify(msg, appinfo.ICON_POMO)
 
     def start_short_rest(self, source):
         if self.state != States.IDLE:
@@ -96,9 +74,9 @@ class Tomatinho:
 
         self.state = States.SHORT_REST
         self.timer.start(SHORT_REST * 60 * 1000, self.stop_timer)
-        self.indicator.set_icon(self.ICON_REST_S)
+        self.indicator.set_icon(appinfo.ICON_REST_S)
         msg = _('Short Pause') + ' ({duration}m)'.format(duration=SHORT_REST)
-        self.notify(msg, self.ICON_REST_S)
+        self.notify(msg, appinfo.ICON_REST_S)
 
     def start_long_rest(self, source):
         if self.state != States.IDLE:
@@ -106,9 +84,9 @@ class Tomatinho:
 
         self.state = States.LONG_REST
         self.timer.start(LONG_REST * 60 * 1000, self.stop_timer)
-        self.indicator.set_icon(self.ICON_REST_L)
+        self.indicator.set_icon(appinfo.ICON_REST_L)
         msg = _('Long Break') + ' ({duration}m)'.format(duration=LONG_REST)
-        self.notify(msg, self.ICON_REST_L)
+        self.notify(msg, appinfo.ICON_REST_L)
 
     def stop_timer(self, source=None):
         """Stop timer and go back to the idle state.
@@ -126,26 +104,11 @@ class Tomatinho:
 
         self.state = States.IDLE
         self.timer.stop()
-        self.indicator.set_icon(self.ICON_IDLE)
-        self.notify(_('Stopped'), self.ICON_IDLE)
+        self.indicator.set_icon(appinfo.ICON_IDLE)
+        self.notify(_('Stopped'), appinfo.ICON_IDLE)
 
     def notify(self, message, icon):
         Notify.Notification.new(appinfo.NAME, message, icon).show()
-
-    def about_dialog(self, source):
-        about_dialog = Gtk.AboutDialog(parent=Gtk.Window())
-        about_dialog.set_destroy_with_parent(True)
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.ICON_POMO)
-        about_dialog.set_logo(pixbuf)
-        about_dialog.set_program_name(appinfo.NAME)
-        about_dialog.set_version(appinfo.VERSION)
-        about_dialog.set_copyright(appinfo.COPYRIGHT)
-        about_dialog.set_comments(appinfo.DESCRIPTION)
-        about_dialog.set_authors([appinfo.AUTHOR])
-        about_dialog.set_license_type(Gtk.License.MIT_X11)
-        about_dialog.set_website(appinfo.SITE)
-        about_dialog.run()
-        about_dialog.destroy()
 
     def quit(self, source):
         if self.state != States.IDLE:
