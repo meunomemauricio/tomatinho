@@ -6,6 +6,7 @@ import subprocess
 import sys
 
 from distutils.core import setup
+from distutils.cmd import Command
 from distutils.command.build import build
 
 sys.path.append('src')
@@ -69,6 +70,24 @@ def get_locale_files():
     return files
 
 
+class update_i18n(Command):
+    """Create/update PO/POT translation files"""
+
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        cmd = ['intltool-update', '--gettext-package', appinfo.ID]
+        for lang in get_languages().keys():
+            print('Updating {lang} PO file'.format(lang=lang))
+            subprocess.call(cmd + [lang], cwd='po')
+
+
 setup(
     name=appinfo.ID,
     version=appinfo.VERSION,
@@ -93,6 +112,7 @@ setup(
     scripts=['scripts/tomatinho'],
     data_files=[ICON_FILES] + get_locale_files(),
     cmdclass={
+        'update_i18n': update_i18n,
         'build': my_build,
     },
 )
