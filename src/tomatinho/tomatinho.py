@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Main Application module."""
 
-import gettext
 import gi
 import os.path
 import signal
@@ -17,11 +16,8 @@ from gi.repository import Notify
 
 from . import appinfo
 from . event_recorder import EventRecorder
+from . locale import _
 from . state_timer import StateTimer
-
-gettext.bindtextdomain(appinfo.ID, appinfo.LOCALE_DIR)
-gettext.textdomain(appinfo.ID)
-_ = gettext.gettext
 
 POMODORO = 25
 SHORT_REST = 5
