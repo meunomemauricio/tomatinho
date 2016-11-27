@@ -87,7 +87,7 @@ class Tomatinho:
         self.state = States.POMODORO
         self.timer.start(POMODORO * 60 * 1000, self.stop_timer)
         self.indicator.set_icon(self.ICON_POMO)
-        msg = _('Pomodoro ({duration}m)').format(duration=POMODORO)
+        msg = _('Pomodoro') + ' ({duration}m)'.format(duration=POMODORO)
         self.notify(msg, self.ICON_POMO)
 
     def start_short_rest(self, source):
@@ -97,7 +97,7 @@ class Tomatinho:
         self.state = States.SHORT_REST
         self.timer.start(SHORT_REST * 60 * 1000, self.stop_timer)
         self.indicator.set_icon(self.ICON_REST_S)
-        msg = _('Short Pause ({duration}m)').format(duration=SHORT_REST)
+        msg = _('Short Pause') + ' ({duration}m)'.format(duration=SHORT_REST)
         self.notify(msg, self.ICON_REST_S)
 
     def start_long_rest(self, source):
@@ -107,7 +107,7 @@ class Tomatinho:
         self.state = States.LONG_REST
         self.timer.start(LONG_REST * 60 * 1000, self.stop_timer)
         self.indicator.set_icon(self.ICON_REST_L)
-        msg = _('Long Break ({duration}m)').format(duration=LONG_REST)
+        msg = _('Long Break') + ' ({duration}m)'.format(duration=LONG_REST)
         self.notify(msg, self.ICON_REST_L)
 
     def stop_timer(self, source=None):
