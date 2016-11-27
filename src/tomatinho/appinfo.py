@@ -21,3 +21,9 @@ USER_DIR = os.path.join(HOME_DIR, '.tomatinho')
 APP_DIR = '/usr/share/tomatinho'
 ICONS_DIR = os.path.join(APP_DIR, 'icons')
 LOCALE_DIR = '/usr/share/locale/'
+
+# Icons location
+ICON_IDLE = os.path.join(ICONS_DIR, 'tomate-idle.png')
+ICON_POMO = os.path.join(ICONS_DIR, 'tomate-pomo.png')
+ICON_REST_S = os.path.join(ICONS_DIR, 'tomate-rest-s.png')
+ICON_REST_L = os.path.join(ICONS_DIR, 'tomate-rest-l.png')
