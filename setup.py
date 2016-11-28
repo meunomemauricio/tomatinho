@@ -89,7 +89,7 @@ class update_i18n(Command):
 
 
 setup(
-    name=appinfo.ID,
+    name=appinfo.NAME,
     version=appinfo.VERSION,
     description=appinfo.DESCRIPTION,
     long_description=readme,

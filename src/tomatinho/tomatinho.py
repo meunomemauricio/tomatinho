@@ -38,6 +38,8 @@ class Tomatinho:
         self.recorder = EventRecorder()
         self.timer = StateTimer()
 
+        Notify.init(appinfo.ID)
+
     def build_menu(self):
         self.menu = Gtk.Menu()
         self.add_new_menu_item(_('Pomodoro'), self.start_pomodoro)
@@ -49,9 +51,7 @@ class Tomatinho:
         self.menu.append(Gtk.SeparatorMenuItem())
         self.add_new_menu_item(_('Quit'), self.quit)
         self.menu.show_all()
-
         self.indicator.set_menu(self.menu)
-        Notify.init(appinfo.ID)
 
     def add_new_menu_item(self, text, action):
         menu_item = Gtk.MenuItem(text)
