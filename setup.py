@@ -8,6 +8,7 @@ import sys
 from distutils.core import setup
 from distutils.cmd import Command
 from distutils.command.build import build
+from distutils.command.install import install
 
 sys.path.append('src')
 from tomatinho import appinfo
@@ -17,9 +18,8 @@ with open('README.md') as readme_file:
 
 PO_DIR = 'po'
 MO_DIR = 'build/mo'
-MO_FILENAME = '{0}.mo'.format(appinfo.ID)
+MO_FILENAME = '{0}.mo'.format(appinfo.GETTEXT_ID)
 DST_TMPL = 'share/locale/{0}/LC_MESSAGES'
-ICON_FILES = ('share/tomatinho/icons', glob.glob('data/icons/*.png'))
 
 
 def get_languages():
@@ -88,6 +88,27 @@ class update_i18n(Command):
             subprocess.call(cmd + [lang], cwd='po')
 
 
+class post_install(install):
+    """Execute system commands after the install process"""
+
+    def run(self):
+        super().run()
+        self.compile_schemas()
+
+    def compile_schemas(self):
+        """Compile the Schemas for GSettings."""
+        print('Compiling GSettings schema')
+        cmd = ['glib-compile-schemas', '/usr/share/glib-2.0/schemas']
+        subprocess.call(cmd)
+
+
+my_data_files = [
+    ('share/tomatinho/icons', glob.glob('data/icons/*.png')),
+    ('/usr/share/glib-2.0/schemas/',
+     ['data/com.github.meunomemauricio.tomatinho.gschema.xml']),
+]
+
+
 setup(
     name=appinfo.NAME,
     version=appinfo.VERSION,
@@ -110,9 +131,10 @@ setup(
     package_dir={'': 'src'},
     packages=['tomatinho'],
     scripts=['scripts/tomatinho'],
-    data_files=[ICON_FILES] + get_locale_files(),
+    data_files=my_data_files + get_locale_files(),
     cmdclass={
         'update_i18n': update_i18n,
         'build': my_build,
+        'install': post_install,
     },
 )

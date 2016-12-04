@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schemalist>
+  <schema id="com.github.meunomemauricio.tomatinho" path="/com/github/meunomemauricio/tomatinho/">
+    <key name="pomo-intvl" type="i">
+      <range min="1" max="120"/>
+      <default>25</default>
+      <summary>Pomodoro Interval</summary>
+      <description>Interval (in minutes) of a Pomodoro</description>
+    </key>
+    <key name="s-rest-intvl" type="i">
+      <range min="1" max="15"/>
+      <default>5</default>
+      <summary>Short Rest Interval</summary>
+      <description>Interval (in minutes) of a Short Rest</description>
+    </key>
+    <key name="l-rest-intvl" type="i">
+      <range min="1" max="30"/>
+      <default>15</default>
+      <summary>Long Rest Interval</summary>
+      <description>Interval (in minutes) of a Long Rest</description>
+    </key>
+  </schema>
+</schemalist>

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tomatinho\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-27 15:11-0200\n"
+"POT-Creation-Date: 2016-12-04 15:22-0200\n"
 "PO-Revision-Date: 2016-11-18 20:43-0200\n"
 "Last-Translator: Ana Carla Bermudez <>\n"
 "Language-Team: \n"
@@ -18,30 +18,45 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../src/tomatinho/tomatinho.py:65 ../src/tomatinho/tomatinho.py:90
+#: ../src/tomatinho/tomatinho.py:45 ../src/tomatinho/tomatinho.py:71
+#: ../src/tomatinho/settings.py:77
 msgid "Pomodoro"
 msgstr "Pomodoro"
 
-#: ../src/tomatinho/tomatinho.py:66 ../src/tomatinho/tomatinho.py:100
+#: ../src/tomatinho/tomatinho.py:46 ../src/tomatinho/tomatinho.py:82
+#: ../src/tomatinho/settings.py:78
 msgid "Short Pause"
 msgstr "Courte Pause"
 
-#: ../src/tomatinho/tomatinho.py:67 ../src/tomatinho/tomatinho.py:110
+#: ../src/tomatinho/tomatinho.py:47 ../src/tomatinho/tomatinho.py:93
+#: ../src/tomatinho/settings.py:79
 msgid "Long Break"
 msgstr "Longue Pause"
 
-#: ../src/tomatinho/tomatinho.py:68
+#: ../src/tomatinho/tomatinho.py:48
 msgid "Stop"
 msgstr "Arrêter"
 
-#: ../src/tomatinho/tomatinho.py:70
+#: ../src/tomatinho/tomatinho.py:50 ../src/tomatinho/settings.py:40
+msgid "Settings"
+msgstr "Paramètres"
+
+#: ../src/tomatinho/tomatinho.py:52
 msgid "About"
 msgstr "Information"
 
-#: ../src/tomatinho/tomatinho.py:72
+#: ../src/tomatinho/tomatinho.py:54
 msgid "Quit"
 msgstr "Sortir"
 
-#: ../src/tomatinho/tomatinho.py:130
+#: ../src/tomatinho/tomatinho.py:113
 msgid "Stopped"
 msgstr "Arreté"
+
+#: ../src/tomatinho/settings.py:41
+msgid "Cancel"
+msgstr "Annuler"
+
+#: ../src/tomatinho/settings.py:48
+msgid "Timers"
+msgstr "Minuteries"

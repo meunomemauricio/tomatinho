@@ -13,10 +13,7 @@ from . event_recorder import EventRecorder
 from . locale import _
 from . state_timer import StateTimer
 from . states import States
-
-POMODORO = 25
-SHORT_REST = 5
-LONG_REST = 15
+from . settings import Settings, SettingsDialog
 
 
 class Tomatinho:
@@ -29,6 +26,8 @@ class Tomatinho:
             AppIndicator3.IndicatorCategory.APPLICATION_STATUS,
         )
         self.indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
+
+        self.settings = Settings()
 
         self.menu = None
         self.build_menu()
@@ -47,6 +46,8 @@ class Tomatinho:
         self.add_new_menu_item(_('Long Break'), self.start_long_rest)
         self.add_new_menu_item(_('Stop'), self.stop_timer)
         self.menu.append(Gtk.SeparatorMenuItem())
+        self.add_new_menu_item(_('Settings'), SettingsDialog.display)
+        self.menu.append(Gtk.SeparatorMenuItem())
         self.add_new_menu_item(_('About'), about_dialog)
         self.menu.append(Gtk.SeparatorMenuItem())
         self.add_new_menu_item(_('Quit'), self.quit)
@@ -63,9 +64,10 @@ class Tomatinho:
             self.recorder.record(self.state, False)
 
         self.state = States.POMODORO
-        self.timer.start(POMODORO * 60 * 1000, self.stop_timer)
+        time_ms = self.settings.pomo_intvl * 60 * 1000
+        self.timer.start(time_ms, self.stop_timer)
         self.indicator.set_icon(appinfo.ICON_POMO)
-        msg = _('Pomodoro') + ' ({duration}m)'.format(duration=POMODORO)
+        msg = _('Pomodoro') + ' ({0}m)'.format(self.settings.pomo_intvl)
         self.notify(msg, appinfo.ICON_POMO)
 
     def start_short_rest(self, source):
@@ -73,9 +75,10 @@ class Tomatinho:
             self.recorder.record(self.state, False)
 
         self.state = States.SHORT_REST
-        self.timer.start(SHORT_REST * 60 * 1000, self.stop_timer)
+        time_ms = self.settings.s_rest_intvl * 60 * 1000
+        self.timer.start(time_ms, self.stop_timer)
         self.indicator.set_icon(appinfo.ICON_REST_S)
-        msg = _('Short Pause') + ' ({duration}m)'.format(duration=SHORT_REST)
+        msg = _('Short Pause') + ' ({0}m)'.format(self.settings.s_rest_intvl)
         self.notify(msg, appinfo.ICON_REST_S)
 
     def start_long_rest(self, source):
@@ -83,9 +86,10 @@ class Tomatinho:
             self.recorder.record(self.state, False)
 
         self.state = States.LONG_REST
-        self.timer.start(LONG_REST * 60 * 1000, self.stop_timer)
+        time_ms = self.settings.l_rest_intvl * 60 * 1000
+        self.timer.start(time_ms, self.stop_timer)
         self.indicator.set_icon(appinfo.ICON_REST_L)
-        msg = _('Long Break') + ' ({duration}m)'.format(duration=LONG_REST)
+        msg = _('Long Break') + ' ({0}m)'.format(self.settings.l_rest_intvl)
         self.notify(msg, appinfo.ICON_REST_L)
 
     def stop_timer(self, source=None):
