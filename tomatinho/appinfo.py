@@ -25,7 +25,8 @@ ICONS_DIR = RESOURCES_DIR / "icons"
 LOCALE_DIR = "/usr/share/locale/"
 
 # Icons location
-ICON_IDLE = ICONS_DIR / "tomate-idle.png"
-ICON_POMO = ICONS_DIR / "tomate-pomo.png"
-ICON_REST_S = ICONS_DIR / "tomate-rest-s.png"
-ICON_REST_L = ICONS_DIR / "tomate-rest-l.png"
+# NOTE: Converted to str, since GTK can't take Path directly
+ICON_IDLE = str(ICONS_DIR / "tomate-idle.png")
+ICON_POMO = str(ICONS_DIR / "tomate-pomo.png")
+ICON_REST_S = str(ICONS_DIR / "tomate-rest-s.png")
+ICON_REST_L = str(ICONS_DIR / "tomate-rest-l.png")
