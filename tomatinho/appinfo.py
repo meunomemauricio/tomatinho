@@ -3,7 +3,6 @@
 Used to generate About page and package information.
 """
 
-import os.path
 from pathlib import Path
 
 # General information
@@ -26,7 +25,7 @@ ICONS_DIR = RESOURCES_DIR / "icons"
 LOCALE_DIR = "/usr/share/locale/"
 
 # Icons location
-ICON_IDLE = os.path.join(ICONS_DIR, "tomate-idle.png")
-ICON_POMO = os.path.join(ICONS_DIR, "tomate-pomo.png")
-ICON_REST_S = os.path.join(ICONS_DIR, "tomate-rest-s.png")
-ICON_REST_L = os.path.join(ICONS_DIR, "tomate-rest-l.png")
+ICON_IDLE = ICONS_DIR / "tomate-idle.png"
+ICON_POMO = ICONS_DIR / "tomate-pomo.png"
+ICON_REST_S = ICONS_DIR / "tomate-rest-s.png"
+ICON_REST_L = ICONS_DIR / "tomate-rest-l.png"

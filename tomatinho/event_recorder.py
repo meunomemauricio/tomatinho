@@ -1,7 +1,6 @@
 """This module is responsible for storing event information on the DB."""
 
 import datetime
-import os.path
 import sqlite3
 
 from tomatinho import appinfo
@@ -29,9 +28,10 @@ class EventRecorder:
 
         :return: New connection to the DB
         """
-        if not os.path.exists(appinfo.USER_DIR):
-            os.makedirs(appinfo.USER_DIR)
-        conn = sqlite3.connect(os.path.join(appinfo.USER_DIR, "tomatinho.db"))
+        if not appinfo.USER_DIR.exists():
+            appinfo.USER_DIR.makedir()
+
+        conn = sqlite3.connect(appinfo.USER_DIR / "tomatinho.db")
         conn.cursor().execute(self.CREATE_QUERY)
         conn.commit()
         return conn
