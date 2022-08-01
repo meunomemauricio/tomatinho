@@ -2,16 +2,20 @@
 
 import signal
 
-from gi.repository import Gtk
-from gi.repository import AppIndicator3
-from gi.repository import Notify
+import gi
 
-from . import appinfo
-from . about_dialog import about_dialog
-from . event_recorder import EventRecorder
-from . locale import _
-from . state_timer import StateTimer
-from . states import States
+gi.require_version("Gtk", "3.0")
+gi.require_version("AppIndicator3", "0.1")
+gi.require_version("Notify", "0.7")
+
+from gi.repository import AppIndicator3, Gtk, Notify
+
+from tomatinho import appinfo
+from tomatinho.about_dialog import about_dialog
+from tomatinho.event_recorder import EventRecorder
+from tomatinho.locale import _
+from tomatinho.state_timer import StateTimer
+from tomatinho.states import States
 
 POMODORO = 25
 SHORT_REST = 5
@@ -39,14 +43,14 @@ class Tomatinho:
 
     def build_menu(self):
         self.menu = Gtk.Menu()
-        self.add_new_menu_item(_('Pomodoro'), self.start_pomodoro)
-        self.add_new_menu_item(_('Short Pause'), self.start_short_rest)
-        self.add_new_menu_item(_('Long Break'), self.start_long_rest)
-        self.add_new_menu_item(_('Stop'), self.stop_timer)
+        self.add_new_menu_item(_("Pomodoro"), self.start_pomodoro)
+        self.add_new_menu_item(_("Short Pause"), self.start_short_rest)
+        self.add_new_menu_item(_("Long Break"), self.start_long_rest)
+        self.add_new_menu_item(_("Stop"), self.stop_timer)
         self.menu.append(Gtk.SeparatorMenuItem())
-        self.add_new_menu_item(_('About'), about_dialog)
+        self.add_new_menu_item(_("About"), about_dialog)
         self.menu.append(Gtk.SeparatorMenuItem())
-        self.add_new_menu_item(_('Quit'), self.quit)
+        self.add_new_menu_item(_("Quit"), self.quit)
         self.menu.show_all()
 
         self.indicator.set_menu(self.menu)
@@ -54,7 +58,7 @@ class Tomatinho:
 
     def add_new_menu_item(self, text, action):
         menu_item = Gtk.MenuItem(text)
-        menu_item.connect('activate', action)
+        menu_item.connect("activate", action)
         self.menu.append(menu_item)
 
     def start_pomodoro(self, source):
@@ -64,7 +68,7 @@ class Tomatinho:
         self.state = States.POMODORO
         self.timer.start(POMODORO * 60 * 1000, self.stop_timer)
         self.indicator.set_icon(appinfo.ICON_POMO)
-        msg = _('Pomodoro') + ' ({duration}m)'.format(duration=POMODORO)
+        msg = _("Pomodoro") + " ({duration}m)".format(duration=POMODORO)
         self.notify(msg, appinfo.ICON_POMO)
 
     def start_short_rest(self, source):
@@ -74,7 +78,7 @@ class Tomatinho:
         self.state = States.SHORT_REST
         self.timer.start(SHORT_REST * 60 * 1000, self.stop_timer)
         self.indicator.set_icon(appinfo.ICON_REST_S)
-        msg = _('Short Pause') + ' ({duration}m)'.format(duration=SHORT_REST)
+        msg = _("Short Pause") + " ({duration}m)".format(duration=SHORT_REST)
         self.notify(msg, appinfo.ICON_REST_S)
 
     def start_long_rest(self, source):
@@ -84,7 +88,7 @@ class Tomatinho:
         self.state = States.LONG_REST
         self.timer.start(LONG_REST * 60 * 1000, self.stop_timer)
         self.indicator.set_icon(appinfo.ICON_REST_L)
-        msg = _('Long Break') + ' ({duration}m)'.format(duration=LONG_REST)
+        msg = _("Long Break") + " ({duration}m)".format(duration=LONG_REST)
         self.notify(msg, appinfo.ICON_REST_L)
 
     def stop_timer(self, source=None):
@@ -104,7 +108,7 @@ class Tomatinho:
         self.state = States.IDLE
         self.timer.stop()
         self.indicator.set_icon(appinfo.ICON_IDLE)
-        self.notify(_('Stopped'), appinfo.ICON_IDLE)
+        self.notify(_("Stopped"), appinfo.ICON_IDLE)
 
     def notify(self, message, icon):
         Notify.Notification.new(appinfo.NAME, message, icon).show()

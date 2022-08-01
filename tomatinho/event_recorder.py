@@ -1,22 +1,23 @@
-# -*- coding: utf-8 -*-
 """This module is responsible for storing event information on the DB."""
 
 import datetime
-import sqlite3
 import os.path
+import sqlite3
 
-from . import appinfo
+from tomatinho import appinfo
 
 
 class EventRecorder:
     """Record events on the Database."""
 
-    INSERT_QUERY = 'INSERT INTO statistics VALUES (?, ?, ?)'
-    CREATE_QUERY = ('CREATE TABLE IF NOT EXISTS statistics ('
-                    'operation INTEGER,'
-                    'completed BOOLEAN,'
-                    'datetime TIMESTAMP'
-                    ')')
+    INSERT_QUERY = "INSERT INTO statistics VALUES (?, ?, ?)"
+    CREATE_QUERY = (
+        "CREATE TABLE IF NOT EXISTS statistics ("
+        "operation INTEGER,"
+        "completed BOOLEAN,"
+        "datetime TIMESTAMP"
+        ")"
+    )
 
     def __init__(self):
         self.statistics_db = self.get_db_connection()
@@ -30,7 +31,7 @@ class EventRecorder:
         """
         if not os.path.exists(appinfo.USER_DIR):
             os.makedirs(appinfo.USER_DIR)
-        conn = sqlite3.connect(os.path.join(appinfo.USER_DIR, 'tomatinho.db'))
+        conn = sqlite3.connect(os.path.join(appinfo.USER_DIR, "tomatinho.db"))
         conn.cursor().execute(self.CREATE_QUERY)
         conn.commit()
         return conn
@@ -45,7 +46,6 @@ class EventRecorder:
         """
         current_datetime = datetime.datetime.now()
         self.statistics_db.cursor().execute(
-            self.INSERT_QUERY,
-            (operation, completed, current_datetime)
+            self.INSERT_QUERY, (operation, completed, current_datetime)
         )
         self.statistics_db.commit()

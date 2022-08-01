@@ -1,9 +1,8 @@
 """About Dialog definition."""
 
-from gi.repository import Gtk
-from gi.repository import GdkPixbuf
+from gi.repository import GdkPixbuf, Gtk
 
-from . import appinfo
+from tomatinho import appinfo
 
 
 def about_dialog(source):

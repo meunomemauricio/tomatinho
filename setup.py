@@ -3,22 +3,23 @@ import os
 import shutil
 import subprocess
 import sys
-
-from distutils.core import setup
 from distutils.cmd import Command
 from distutils.command.build import build
+from distutils.core import setup
 
-sys.path.append('src')
+from setuptools import find_packages
+
+sys.path.append("src")
 from tomatinho import appinfo
 
-with open('README.md') as readme_file:
+with open("README.md") as readme_file:
     readme = readme_file.read()
 
-PO_DIR = 'po'
-MO_DIR = 'build/mo'
-MO_FILENAME = '{0}.mo'.format(appinfo.ID)
-DST_TMPL = 'share/locale/{0}/LC_MESSAGES'
-ICON_FILES = ('share/tomatinho/icons', glob.glob('resources/icons/*.png'))
+PO_DIR = "po"
+MO_DIR = "build/mo"
+MO_FILENAME = "{0}.mo".format(appinfo.ID)
+DST_TMPL = "share/locale/{0}/LC_MESSAGES"
+ICON_FILES = ("share/tomatinho/icons", glob.glob("resources/icons/*.png"))
 
 
 def get_languages():
@@ -29,7 +30,7 @@ def get_languages():
     """
     langs = {}
     for f in os.listdir(PO_DIR):
-        if f.endswith('.po'):
+        if f.endswith(".po"):
             name = os.path.basename(f)
             lang = os.path.splitext(name)[0]
             langs[lang] = os.path.join(PO_DIR, f)
@@ -52,7 +53,7 @@ class my_build(build):
         for lang, po_file in get_languages().items():
             path = os.path.join(MO_DIR, lang, MO_FILENAME)
             clear_path(path)
-            cmd = ['msgfmt', po_file, '-o', path]
+            cmd = ["msgfmt", po_file, "-o", path]
             subprocess.call(cmd)
 
 
@@ -81,10 +82,10 @@ class update_i18n(Command):
         pass
 
     def run(self):
-        cmd = ['intltool-update', '--gettext-package', appinfo.ID]
+        cmd = ["intltool-update", "--gettext-package", appinfo.ID]
         for lang in get_languages().keys():
-            print('Updating {lang} PO file'.format(lang=lang))
-            subprocess.call(cmd + [lang], cwd='po')
+            print("Updating {lang} PO file".format(lang=lang))
+            subprocess.call(cmd + [lang], cwd="po")
 
 
 setup(
@@ -96,22 +97,24 @@ setup(
     author=appinfo.AUTHOR,
     url=appinfo.SITE,
     classifiers=[
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: POSIX :: Linux',
-        'Environment :: X11 Applications :: GTK',
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: End Users/Desktop',
-        'Natural Language :: English',
-        'Topic :: Utilities',
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.5",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: POSIX :: Linux",
+        "Environment :: X11 Applications :: GTK",
+        "Development Status :: 2 - Pre-Alpha",
+        "Intended Audience :: End Users/Desktop",
+        "Natural Language :: English",
+        "Topic :: Utilities",
     ],
-    package_dir={'': 'src'},
-    packages=['tomatinho'],
-    scripts=['scripts/tomatinho'],
+    packages=find_packages(),
     data_files=[ICON_FILES] + get_locale_files(),
     cmdclass={
-        'update_i18n': update_i18n,
-        'build': my_build,
+        "update_i18n": update_i18n,
+        "build": my_build,
     },
+    entry_points="""
+        [console_scripts]
+        tomatinho=tomatinho.tomatinho:main
+    """,
 )

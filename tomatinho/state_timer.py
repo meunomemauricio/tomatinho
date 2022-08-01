@@ -17,6 +17,7 @@ class StateTimer:
         :param duration: duration of the timer in milliseconds.
         :param callback: callback function to be executed on timeout.
         """
+
         def _callback():
             """Wrapper to make sure False is returned to GLib function"""
             callback()
