@@ -1,13 +1,11 @@
-
 import sys
-
 from unittest.mock import Mock
+
 from gi.repository import GLib
 from pytest import fixture
 
-sys.path.append('src')
+sys.path.append("src")
 from tomatinho.state_timer import StateTimer
-
 
 RUN_TIMEOUT = 5
 
@@ -22,7 +20,6 @@ def main_loop():
 
 
 class TestStateTimer:
-
     def test_starting_timer(self, main_loop):
         """Make sure the timer runs the callback function."""
         mock = Mock()
@@ -41,14 +38,6 @@ class TestStateTimer:
         mock = Mock()
         st = StateTimer()
         st.start(1, mock)
-    extras_require={
-        "dev": ["pre-commit"],
-        "test": [
-            "pytest==3.0.4",
-            "pytest-cov==2.4.0",
-            "freezegun==0.3.8",
-        ]
-    },
 
         st.start(1, mock)
         main_loop.run()
