@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Main Application module."""
 
 import signal

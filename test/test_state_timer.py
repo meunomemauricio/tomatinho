@@ -41,6 +41,14 @@ class TestStateTimer:
         mock = Mock()
         st = StateTimer()
         st.start(1, mock)
+    extras_require={
+        "dev": ["pre-commit"],
+        "test": [
+            "pytest==3.0.4",
+            "pytest-cov==2.4.0",
+            "freezegun==0.3.8",
+        ]
+    },
 
         st.start(1, mock)
         main_loop.run()

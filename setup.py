@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import glob
 import os
 import shutil
@@ -19,7 +18,7 @@ PO_DIR = 'po'
 MO_DIR = 'build/mo'
 MO_FILENAME = '{0}.mo'.format(appinfo.ID)
 DST_TMPL = 'share/locale/{0}/LC_MESSAGES'
-ICON_FILES = ('share/tomatinho/icons', glob.glob('data/icons/*.png'))
+ICON_FILES = ('share/tomatinho/icons', glob.glob('resources/icons/*.png'))
 
 
 def get_languages():

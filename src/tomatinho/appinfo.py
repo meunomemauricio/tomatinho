@@ -4,22 +4,24 @@ Used to generate About page and package information.
 """
 
 import os.path
+from pathlib import Path
 
 # General information
 ID = 'tomatinho'
 NAME = 'Tomatinho'
 COPYRIGHT = '(C) 2016 Mauricio Freitas'
-VERSION = '0.1'
+VERSION = '0.2'
 DESCRIPTION = 'GTK Pomodoro Timer application'
 LICENSE = 'MIT'
 AUTHOR = 'Mauricio Freitas'
 SITE = 'https://github.com/meunomemauricio/tomatinho'
 
 # Application Directories
-HOME_DIR = os.path.expanduser('~')
-USER_DIR = os.path.join(HOME_DIR, '.tomatinho')
-APP_DIR = '/usr/share/tomatinho'
-ICONS_DIR = os.path.join(APP_DIR, 'icons')
+HOME_DIR = Path.home()
+USER_DIR = HOME_DIR / '.tomatinho'
+BASE_DIR = Path(__file__).parent.parent.parent
+RESOURCES_DIR = BASE_DIR / 'resources'
+ICONS_DIR = RESOURCES_DIR / 'icons'
 LOCALE_DIR = '/usr/share/locale/'
 
 # Icons location
