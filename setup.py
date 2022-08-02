@@ -103,6 +103,7 @@ setup(
         "Natural Language :: English",
         "Topic :: Utilities",
     ],
+    install_requires=["PyGObject==3.42.2"],
     packages=find_packages(),
     include_package_data=True,
     entry_points="""
