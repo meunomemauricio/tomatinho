@@ -5,7 +5,8 @@ from gi.repository import GdkPixbuf, Gtk
 from tomatinho import appinfo
 
 
-def about_dialog(source):
+def about_dialog(source) -> None:
+    """Build and display the About dialog."""
     about_dialog = Gtk.AboutDialog(parent=Gtk.Window())
     about_dialog.set_destroy_with_parent(True)
     pixbuf = GdkPixbuf.Pixbuf.new_from_file(appinfo.ICON_POMO)

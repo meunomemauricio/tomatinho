@@ -1,11 +1,9 @@
 import datetime
 import os
 import sqlite3
-import sys
 
 from freezegun import freeze_time
 
-sys.path.append("src")
 from tomatinho import event_recorder
 from tomatinho.tomatinho import States
 
@@ -36,7 +34,7 @@ class TestEventRecorder:
 
         recorder = event_recorder.EventRecorder()
 
-        assert table_exists("statistics", recorder.statistics_db.cursor())
+        assert table_exists("statistics", recorder.db.cursor())
 
     def test_table_already_exists(self, monkeypatch, tmpdir):
         """Test what happens when the statistics table already exists."""

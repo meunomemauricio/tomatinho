@@ -19,14 +19,12 @@ class EventRecorder:
     )
 
     def __init__(self):
-        self.statistics_db = self.get_db_connection()
+        self.db = self._get_db_connection()
 
-    def get_db_connection(self):
+    def _get_db_connection(self) -> sqlite3.Connection:
         """Get a new DB connection.
 
-        Creates the table if it is not present already.
-
-        :return: New connection to the DB
+        Creates the database file and table if it is not present already.
         """
         if not appinfo.USER_DIR.exists():
             appinfo.USER_DIR.makedir()
@@ -36,7 +34,7 @@ class EventRecorder:
         conn.commit()
         return conn
 
-    def record(self, operation, completed):
+    def record(self, operation, completed) -> None:
         """Record an event to the DB.
 
         :param operation: A value from the States enum representing the state
@@ -45,7 +43,7 @@ class EventRecorder:
         was interrupted.
         """
         current_datetime = datetime.datetime.now()
-        self.statistics_db.cursor().execute(
+        self.db.cursor().execute(
             self.INSERT_QUERY, (operation, completed, current_datetime)
         )
-        self.statistics_db.commit()
+        self.db.commit()

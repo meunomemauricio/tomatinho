@@ -17,7 +17,7 @@ from tomatinho.locale import _
 from tomatinho.state_timer import StateTimer
 from tomatinho.states import States
 
-POMODORO = 25
+POMODORO = 25  # Minutes
 SHORT_REST = 5
 LONG_REST = 15
 
@@ -26,70 +26,80 @@ class Tomatinho:
     """Pomodoro Timer Application"""
 
     def __init__(self):
-        self.indicator = AppIndicator3.Indicator.new(
+        self._indicator = AppIndicator3.Indicator.new(
             appinfo.ID,
             appinfo.ICON_IDLE,
             AppIndicator3.IndicatorCategory.APPLICATION_STATUS,
         )
-        self.indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
+        self._indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
 
-        self.menu = None
-        self.build_menu()
+        self._build_menu()
 
-        self.state = States.IDLE
+        self._state = States.IDLE
 
-        self.recorder = EventRecorder()
-        self.timer = StateTimer()
+        self._recorder = EventRecorder()
+        self._timer = StateTimer()
 
-    def build_menu(self):
-        self.menu = Gtk.Menu()
-        self.add_new_menu_item(_("Pomodoro"), self.start_pomodoro)
-        self.add_new_menu_item(_("Short Pause"), self.start_short_rest)
-        self.add_new_menu_item(_("Long Break"), self.start_long_rest)
-        self.add_new_menu_item(_("Stop"), self.stop_timer)
-        self.menu.append(Gtk.SeparatorMenuItem())
-        self.add_new_menu_item(_("About"), about_dialog)
-        self.menu.append(Gtk.SeparatorMenuItem())
-        self.add_new_menu_item(_("Quit"), self.quit)
-        self.menu.show_all()
+    @staticmethod
+    def _notify(message, icon):
+        """Send a System Notification"""
+        Notify.Notification.new(appinfo.NAME, message, icon).show()
 
-        self.indicator.set_menu(self.menu)
-        Notify.init(appinfo.ID)
-
-    def add_new_menu_item(self, text, action):
+    @staticmethod
+    def _add_menu_item(menu, text, action):
+        """Add a new Item to the menu."""
         menu_item = Gtk.MenuItem(text)
         menu_item.connect("activate", action)
-        self.menu.append(menu_item)
+        menu.append(menu_item)
+
+    def _build_menu(self) -> None:
+        """Build the Application Menu."""
+        menu = Gtk.Menu()
+        self._add_menu_item(menu, _("Pomodoro"), self.start_pomodoro)
+        self._add_menu_item(menu, _("Short Pause"), self.start_short_rest)
+        self._add_menu_item(menu, _("Long Break"), self.start_long_rest)
+        self._add_menu_item(menu, _("Stop"), self.stop_timer)
+        menu.append(Gtk.SeparatorMenuItem())
+        self._add_menu_item(menu, _("About"), about_dialog)
+        menu.append(Gtk.SeparatorMenuItem())
+        self._add_menu_item(menu, _("Quit"), self.quit)
+        menu.show_all()
+
+        self._indicator.set_menu(menu)
+        Notify.init(appinfo.ID)
 
     def start_pomodoro(self, source):
-        if self.state != States.IDLE:
-            self.recorder.record(self.state, False)
+        """Start the Pomodoro timer."""
+        if self._state != States.IDLE:
+            self._recorder.record(self._state, False)
 
-        self.state = States.POMODORO
-        self.timer.start(POMODORO * 60 * 1000, self.stop_timer)
-        self.indicator.set_icon(appinfo.ICON_POMO)
-        msg = _("Pomodoro") + " ({duration}m)".format(duration=POMODORO)
-        self.notify(msg, appinfo.ICON_POMO)
+        self._state = States.POMODORO
+        self._timer.start(POMODORO * 60 * 1000, self.stop_timer)
+        self._indicator.set_icon(appinfo.ICON_POMO)
+        msg = _("Pomodoro") + f" ({POMODORO}m)"
+        self._notify(msg, appinfo.ICON_POMO)
 
     def start_short_rest(self, source):
-        if self.state != States.IDLE:
-            self.recorder.record(self.state, False)
+        """Start a Short Pause."""
+        if self._state != States.IDLE:
+            self._recorder.record(self._state, False)
 
-        self.state = States.SHORT_REST
-        self.timer.start(SHORT_REST * 60 * 1000, self.stop_timer)
-        self.indicator.set_icon(appinfo.ICON_REST_S)
-        msg = _("Short Pause") + " ({duration}m)".format(duration=SHORT_REST)
-        self.notify(msg, appinfo.ICON_REST_S)
+        self._state = States.SHORT_REST
+        self._timer.start(SHORT_REST * 60 * 1000, self.stop_timer)
+        self._indicator.set_icon(appinfo.ICON_REST_S)
+        msg = _("Short Pause") + f" ({SHORT_REST}m)"
+        self._notify(msg, appinfo.ICON_REST_S)
 
     def start_long_rest(self, source):
-        if self.state != States.IDLE:
-            self.recorder.record(self.state, False)
+        """Start a Long Rest."""
+        if self._state != States.IDLE:
+            self._recorder.record(self._state, False)
 
-        self.state = States.LONG_REST
-        self.timer.start(LONG_REST * 60 * 1000, self.stop_timer)
-        self.indicator.set_icon(appinfo.ICON_REST_L)
-        msg = _("Long Break") + " ({duration}m)".format(duration=LONG_REST)
-        self.notify(msg, appinfo.ICON_REST_L)
+        self._state = States.LONG_REST
+        self._timer.start(LONG_REST * 60 * 1000, self.stop_timer)
+        self._indicator.set_icon(appinfo.ICON_REST_L)
+        msg = _("Long Break") + f" ({LONG_REST}m)"
+        self._notify(msg, appinfo.ICON_REST_L)
 
     def stop_timer(self, source=None):
         """Stop timer and go back to the idle state.
@@ -101,21 +111,20 @@ class Tomatinho:
         as interrupted.
         """
         if source is None:
-            self.recorder.record(self.state, True)
-        elif self.state != States.IDLE:
-            self.recorder.record(self.state, False)
+            self._recorder.record(self._state, True)
+        elif self._state != States.IDLE:
+            self._recorder.record(self._state, False)
 
-        self.state = States.IDLE
-        self.timer.stop()
-        self.indicator.set_icon(appinfo.ICON_IDLE)
-        self.notify(_("Stopped"), appinfo.ICON_IDLE)
-
-    def notify(self, message, icon):
-        Notify.Notification.new(appinfo.NAME, message, icon).show()
+        self._state = States.IDLE
+        self._timer.stop()
+        self._indicator.set_icon(appinfo.ICON_IDLE)
+        self._notify(_("Stopped"), appinfo.ICON_IDLE)
 
     def quit(self, source):
-        if self.state != States.IDLE:
-            self.recorder.record(self.state, False)
+        """Quit the Application."""
+        if self._state != States.IDLE:
+            self._recorder.record(self._state, False)
+
         Gtk.main_quit()
 
 
