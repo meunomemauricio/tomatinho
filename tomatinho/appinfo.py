@@ -18,7 +18,7 @@ SITE = "https://github.com/meunomemauricio/tomatinho"
 # Application Directories
 HOME_DIR = Path.home()
 USER_DIR = HOME_DIR / ".tomatinho"
-BASE_DIR = Path(__file__).parent.parent
+BASE_DIR = Path(__file__).parent  # TODO: Will it change with setuptools?
 RESOURCES_DIR = BASE_DIR / "resources"
 ICONS_DIR = RESOURCES_DIR / "icons"
 # TODO: Fix locale directory

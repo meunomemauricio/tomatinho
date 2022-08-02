@@ -4,8 +4,12 @@
 [![Coverage Status](https://coveralls.io/repos/github/meunomemauricio/tomatinho/badge.svg?branch=master)](https://coveralls.io/github/meunomemauricio/tomatinho?branch=master)
 
 
-## Development
+# Installation
 
-### Building I18N
+Install system dependencies:
 
-### Running Tests
+    $ apt install intltool
+
+TODO:
+* Build I18N
+* Running Tests

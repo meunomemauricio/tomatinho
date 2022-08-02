@@ -1,4 +1,3 @@
-import glob
 import os
 import shutil
 import subprocess
@@ -6,6 +5,8 @@ import sys
 from distutils.cmd import Command
 from distutils.command.build import build
 from distutils.core import setup
+from pathlib import Path
+from typing import List, Tuple
 
 from setuptools import find_packages
 
@@ -15,58 +16,52 @@ from tomatinho import appinfo
 with open("README.md") as readme_file:
     readme = readme_file.read()
 
-PO_DIR = "po"
-MO_DIR = "build/mo"
-MO_FILENAME = "{0}.mo".format(appinfo.ID)
+PO_DIR = Path("po")
+MO_DIR = Path("build/mo")
+MO_FILENAME = f"{appinfo.ID}.mo"
 DST_TMPL = "share/locale/{0}/LC_MESSAGES"
-ICON_FILES = ("share/tomatinho/icons", glob.glob("resources/icons/*.png"))
 
 
-def get_languages():
+def get_languages() -> dict:
     """Discover languages with .po files.
 
     :return: dictionary with the language prefix as key and their PO file as
     value.
     """
-    langs = {}
-    for f in os.listdir(PO_DIR):
-        if f.endswith(".po"):
-            name = os.path.basename(f)
-            lang = os.path.splitext(name)[0]
-            langs[lang] = os.path.join(PO_DIR, f)
-    return langs
+    return {path.suffix: path for path in PO_DIR.glob("*.po")}
 
 
-def clear_path(path):
+def clear_path(path: str) -> None:
     """Make sure that the directory for a path is clear of files."""
     directory = os.path.dirname(path)
     if os.path.exists(directory):
         shutil.rmtree(directory)
+
     os.makedirs(directory)
 
 
 class my_build(build):
-    """Override the build process to also generate the MO files."""
+    """Override the build process to generate the MO files."""
 
-    def run(self):
+    def run(self) -> None:
         super().run()
         for lang, po_file in get_languages().items():
             path = os.path.join(MO_DIR, lang, MO_FILENAME)
             clear_path(path)
-            cmd = ["msgfmt", po_file, "-o", path]
-            subprocess.call(cmd)
+            subprocess.call(["msgfmt", po_file, "-o", path])
 
 
-def get_locale_files():
+def get_locale_files() -> List[Tuple[str, List]]:
     """Get the ``data_files`` entries for MO files.
 
     :return: list of tuples indicating how the .mo files should be copied.
     """
     files = []
     for lang in get_languages().keys():
-        path = os.path.join(MO_DIR, lang, MO_FILENAME)
+        path = str(MO_DIR / lang / MO_FILENAME)
         dest = DST_TMPL.format(lang)
         files.append((dest, [path]))
+
     return files
 
 
@@ -88,6 +83,7 @@ class update_i18n(Command):
             subprocess.call(cmd + [lang], cwd="po")
 
 
+# TODO: Convert to setuptools + toml
 setup(
     name=appinfo.ID,
     version=appinfo.VERSION,
@@ -108,11 +104,7 @@ setup(
         "Topic :: Utilities",
     ],
     packages=find_packages(),
-    data_files=[ICON_FILES] + get_locale_files(),
-    cmdclass={
-        "update_i18n": update_i18n,
-        "build": my_build,
-    },
+    include_package_data=True,
     entry_points="""
         [console_scripts]
         tomatinho=tomatinho.tomatinho:main
