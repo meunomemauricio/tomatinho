@@ -2,7 +2,9 @@ dist: trusty
 sudo: required
 language: python
 python:
-  - "3.4_with_system_site_packages"
+  - "3.8"
+virtualenv:
+  system_site_packages: true
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y gir1.2-gtk-3.0 gir1.2-appindicator3-0.1 gir1.2-notify-0.7 python3-gi

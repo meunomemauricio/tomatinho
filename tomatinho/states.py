@@ -3,6 +3,7 @@
 
 class States:
     """Enum representing the Application states."""
+
     IDLE = 1
     POMODORO = 2
     SHORT_REST = 3

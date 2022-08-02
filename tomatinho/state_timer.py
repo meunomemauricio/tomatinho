@@ -8,28 +8,34 @@ class StateTimer:
     """Timer used to change the application state."""
 
     def __init__(self):
-        self._is_running = False
+        # Event Source ID representing GLib timeout timer.
         self._id = None
 
-    def start(self, duration, callback):
+    def start(self, duration, callback) -> None:
         """Run the timer.
+
+        Starting the timer again will cancel the previous timeout timer.
 
         :param duration: duration of the timer in milliseconds.
         :param callback: callback function to be executed on timeout.
         """
+
         def _callback():
-            """Wrapper to make sure False is returned to GLib function"""
+            """Wrapper to make sure the callback is executed only once.
+
+            `GLib.timeout_add` repeats the callback periodically until it's
+            removed or it returns False, so we force that condition.
+            """
             callback()
             return False
 
-        if self._is_running:
+        if self._id is not None:
             GLib.source_remove(self._id)
 
-        self._is_running = True
         self._id = GLib.timeout_add(duration, _callback)
 
-    def stop(self):
+    def stop(self) -> None:
         """Stop the timer."""
-        if self._is_running:
+        if self._id is not None:
             GLib.source_remove(self._id)
-            self._is_running = False
+            self._id = None
