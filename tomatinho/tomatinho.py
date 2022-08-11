@@ -26,19 +26,19 @@ class Tomatinho:
     """Pomodoro Timer Application"""
 
     def __init__(self):
+        self._state = States.IDLE
+        self._recorder = EventRecorder()
+        self._timer = StateTimer()
+
         self._indicator = AppIndicator3.Indicator.new(
             appinfo.ID,
             appinfo.ICON_IDLE,
             AppIndicator3.IndicatorCategory.APPLICATION_STATUS,
         )
         self._indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
+        self._indicator.set_menu(self._build_menu())
 
-        self._build_menu()
-
-        self._state = States.IDLE
-
-        self._recorder = EventRecorder()
-        self._timer = StateTimer()
+        Notify.init(appinfo.ID)
 
     @staticmethod
     def _notify(message, icon):
@@ -52,7 +52,7 @@ class Tomatinho:
         menu_item.connect("activate", action)
         menu.append(menu_item)
 
-    def _build_menu(self) -> None:
+    def _build_menu(self) -> Gtk.Menu:
         """Build the Application Menu."""
         menu = Gtk.Menu()
         self._add_menu_item(menu, _("Pomodoro"), self.start_pomodoro)
@@ -65,10 +65,9 @@ class Tomatinho:
         self._add_menu_item(menu, _("Quit"), self.quit)
         menu.show_all()
 
-        self._indicator.set_menu(menu)
-        Notify.init(appinfo.ID)
+        return menu
 
-    def start_pomodoro(self, source):
+    def start_pomodoro(self, source) -> None:
         """Start the Pomodoro timer."""
         if self._state != States.IDLE:
             self._recorder.record(self._state, False)
@@ -79,7 +78,7 @@ class Tomatinho:
         msg = _("Pomodoro") + f" ({POMODORO}m)"
         self._notify(msg, appinfo.ICON_POMO)
 
-    def start_short_rest(self, source):
+    def start_short_rest(self, source) -> None:
         """Start a Short Pause."""
         if self._state != States.IDLE:
             self._recorder.record(self._state, False)
@@ -90,7 +89,7 @@ class Tomatinho:
         msg = _("Short Pause") + f" ({SHORT_REST}m)"
         self._notify(msg, appinfo.ICON_REST_S)
 
-    def start_long_rest(self, source):
+    def start_long_rest(self, source) -> None:
         """Start a Long Rest."""
         if self._state != States.IDLE:
             self._recorder.record(self._state, False)
@@ -101,7 +100,7 @@ class Tomatinho:
         msg = _("Long Break") + f" ({LONG_REST}m)"
         self._notify(msg, appinfo.ICON_REST_L)
 
-    def stop_timer(self, source=None):
+    def stop_timer(self, source=None) -> None:
         """Stop timer and go back to the idle state.
 
         If no ``source`` is specified, this method records that the last
@@ -120,7 +119,7 @@ class Tomatinho:
         self._indicator.set_icon(appinfo.ICON_IDLE)
         self._notify(_("Stopped"), appinfo.ICON_IDLE)
 
-    def quit(self, source):
+    def quit(self, source) -> None:
         """Quit the Application."""
         if self._state != States.IDLE:
             self._recorder.record(self._state, False)
