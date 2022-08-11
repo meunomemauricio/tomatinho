@@ -51,7 +51,7 @@ class TestEventRecorder:
         monkeypatch.setattr(event_recorder.appinfo, "USER_DIR", dir)
         recorder = event_recorder.EventRecorder()
 
-        recorder.record(States.POMODORO, True)
+        recorder.record(op=States.POMODORO, completed=True)
 
         results = query_db_table(dir)
         assert len(results) == 1
