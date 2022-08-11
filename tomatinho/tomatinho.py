@@ -76,6 +76,7 @@ class Tomatinho:
         self._timer.start(POMODORO * 60 * 1000, self.stop_timer)
         self._indicator.set_icon(appinfo.ICON_POMO)
         msg = _("Pomodoro") + f" ({POMODORO}m)"
+        self._indicator.set_label("PO", "")
         self._notify(msg, appinfo.ICON_POMO)
 
     def start_short_rest(self, source) -> None:
@@ -87,6 +88,7 @@ class Tomatinho:
         self._timer.start(SHORT_REST * 60 * 1000, self.stop_timer)
         self._indicator.set_icon(appinfo.ICON_REST_S)
         msg = _("Short Pause") + f" ({SHORT_REST}m)"
+        self._indicator.set_label("SR", "")
         self._notify(msg, appinfo.ICON_REST_S)
 
     def start_long_rest(self, source) -> None:
@@ -98,6 +100,7 @@ class Tomatinho:
         self._timer.start(LONG_REST * 60 * 1000, self.stop_timer)
         self._indicator.set_icon(appinfo.ICON_REST_L)
         msg = _("Long Break") + f" ({LONG_REST}m)"
+        self._indicator.set_label("LR", "")
         self._notify(msg, appinfo.ICON_REST_L)
 
     def stop_timer(self, source=None) -> None:
@@ -117,6 +120,7 @@ class Tomatinho:
         self._state = States.IDLE
         self._timer.stop()
         self._indicator.set_icon(appinfo.ICON_IDLE)
+        self._indicator.set_label("", "")
         self._notify(_("Stopped"), appinfo.ICON_IDLE)
 
     def quit(self, source) -> None:
