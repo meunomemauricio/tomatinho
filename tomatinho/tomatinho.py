@@ -39,9 +39,9 @@ class Tomatinho:
         Notify.init(appinfo.ID)
 
     @staticmethod
-    def _notify(message: str, icon) -> None:
+    def _notify(msg: str, icon: str) -> None:
         """Send a System Notification"""
-        Notify.Notification.new(appinfo.NAME, message, icon).show()
+        Notify.Notification.new(appinfo.NAME, msg, icon).show()
 
     @staticmethod
     def _add_menu_item(
@@ -80,7 +80,7 @@ class Tomatinho:
         self._timer.start(POMODORO * 60, self.stop_timer)
         self._indicator.set_icon(appinfo.ICON_POMO)
         msg = _("Pomodoro") + f" ({POMODORO}m)"
-        self._notify(msg, appinfo.ICON_POMO)
+        self._notify(msg=msg, icon=appinfo.ICON_POMO)
 
     def start_short_rest(self, source: Gtk.MenuItem) -> None:
         """Start a Short Pause."""
@@ -91,7 +91,7 @@ class Tomatinho:
         self._timer.start(SHORT_REST, self.stop_timer)
         self._indicator.set_icon(appinfo.ICON_REST_S)
         msg = _("Short Pause") + f" ({SHORT_REST}m)"
-        self._notify(msg, appinfo.ICON_REST_S)
+        self._notify(msg=msg, icon=appinfo.ICON_REST_S)
 
     def start_long_rest(self, source: Gtk.MenuItem) -> None:
         """Start a Long Rest."""
@@ -102,7 +102,7 @@ class Tomatinho:
         self._timer.start(LONG_REST * 60, self.stop_timer)
         self._indicator.set_icon(appinfo.ICON_REST_L)
         msg = _("Long Break") + f" ({LONG_REST}m)"
-        self._notify(msg, appinfo.ICON_REST_L)
+        self._notify(msg=msg, icon=appinfo.ICON_REST_L)
 
     def stop_timer(self, source: Gtk.MenuItem = None) -> None:
         """Stop timer and go back to the idle state.
@@ -121,7 +121,7 @@ class Tomatinho:
         self._state = States.IDLE
         self._timer.stop()
         self._indicator.set_icon(appinfo.ICON_IDLE)
-        self._notify(_("Stopped"), appinfo.ICON_IDLE)
+        self._notify(msg=_("Stopped"), icon=appinfo.ICON_IDLE)
 
     def quit(self, source) -> None:
         """Quit the Application."""
