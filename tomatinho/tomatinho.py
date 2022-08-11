@@ -2,12 +2,6 @@
 
 import signal
 
-import gi
-
-gi.require_version("Gtk", "3.0")
-gi.require_version("AppIndicator3", "0.1")
-gi.require_version("Notify", "0.7")
-
 from gi.repository import AppIndicator3, Gtk, Notify
 
 from tomatinho import appinfo
@@ -28,7 +22,6 @@ class Tomatinho:
     def __init__(self):
         self._state = States.IDLE
         self._recorder = EventRecorder()
-        self._timer = StateTimer()
 
         self._indicator = AppIndicator3.Indicator.new(
             appinfo.ID,
@@ -38,15 +31,17 @@ class Tomatinho:
         self._indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
         self._indicator.set_menu(self._build_menu())
 
+        self._timer = StateTimer(label_cb=self.update_label)
+
         Notify.init(appinfo.ID)
 
     @staticmethod
-    def _notify(message, icon):
+    def _notify(message, icon) -> None:
         """Send a System Notification"""
         Notify.Notification.new(appinfo.NAME, message, icon).show()
 
     @staticmethod
-    def _add_menu_item(menu, text, action):
+    def _add_menu_item(menu, text, action) -> None:
         """Add a new Item to the menu."""
         menu_item = Gtk.MenuItem(text)
         menu_item.connect("activate", action)
@@ -67,6 +62,10 @@ class Tomatinho:
 
         return menu
 
+    def update_label(self, label: str) -> None:
+        """Update app's label with the time left on the Timer."""
+        self._indicator.set_label(label, "")
+
     def start_pomodoro(self, source) -> None:
         """Start the Pomodoro timer."""
         if self._state != States.IDLE:
@@ -75,7 +74,6 @@ class Tomatinho:
         self._state = States.POMODORO
         self._timer.start(POMODORO * 60, self.stop_timer)
         self._indicator.set_icon(appinfo.ICON_POMO)
-        self._indicator.set_label("PO", "")
         msg = _("Pomodoro") + f" ({POMODORO}m)"
         self._notify(msg, appinfo.ICON_POMO)
 
@@ -85,13 +83,12 @@ class Tomatinho:
             self._recorder.record(op=self._state, completed=False)
 
         self._state = States.SHORT_REST
-        self._timer.start(SHORT_REST * 60, self.stop_timer)
+        self._timer.start(SHORT_REST, self.stop_timer)
         self._indicator.set_icon(appinfo.ICON_REST_S)
-        self._indicator.set_label("SR", "")
         msg = _("Short Pause") + f" ({SHORT_REST}m)"
         self._notify(msg, appinfo.ICON_REST_S)
 
-    def start_long_rest(self, source) -> None:
+    def start_long_rest(self, source):
         """Start a Long Rest."""
         if self._state != States.IDLE:
             self._recorder.record(op=self._state, completed=False)
@@ -99,9 +96,9 @@ class Tomatinho:
         self._state = States.LONG_REST
         self._timer.start(LONG_REST * 60, self.stop_timer)
         self._indicator.set_icon(appinfo.ICON_REST_L)
-        self._indicator.set_label("LR", "")
         msg = _("Long Break") + f" ({LONG_REST}m)"
         self._notify(msg, appinfo.ICON_REST_L)
+        return True
 
     def stop_timer(self, source=None) -> None:
         """Stop timer and go back to the idle state.
@@ -120,7 +117,6 @@ class Tomatinho:
         self._state = States.IDLE
         self._timer.stop()
         self._indicator.set_icon(appinfo.ICON_IDLE)
-        self._indicator.set_label("", "")
         self._notify(_("Stopped"), appinfo.ICON_IDLE)
 
     def quit(self, source) -> None:
