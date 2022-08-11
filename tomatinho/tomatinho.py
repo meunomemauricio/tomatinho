@@ -1,6 +1,7 @@
 """Main Application module."""
 
 import signal
+from collections import Callable
 
 from gi.repository import AppIndicator3, Gtk, Notify
 
@@ -10,6 +11,8 @@ from tomatinho.event_recorder import EventRecorder
 from tomatinho.locale import _
 from tomatinho.state_timer import StateTimer
 from tomatinho.states import States
+
+MenuCallable = Callable[[Gtk.MenuItem], None]
 
 POMODORO = 25  # Minutes
 SHORT_REST = 5
@@ -36,12 +39,14 @@ class Tomatinho:
         Notify.init(appinfo.ID)
 
     @staticmethod
-    def _notify(message, icon) -> None:
+    def _notify(message: str, icon) -> None:
         """Send a System Notification"""
         Notify.Notification.new(appinfo.NAME, message, icon).show()
 
     @staticmethod
-    def _add_menu_item(menu, text, action) -> None:
+    def _add_menu_item(
+        menu: Gtk.Menu, text: str, action: MenuCallable
+    ) -> None:
         """Add a new Item to the menu."""
         menu_item = Gtk.MenuItem(text)
         menu_item.connect("activate", action)
@@ -66,7 +71,7 @@ class Tomatinho:
         """Update app's label with the time left on the Timer."""
         self._indicator.set_label(label, "")
 
-    def start_pomodoro(self, source) -> None:
+    def start_pomodoro(self, source: Gtk.MenuItem) -> None:
         """Start the Pomodoro timer."""
         if self._state != States.IDLE:
             self._recorder.record(op=self._state, completed=False)
@@ -77,7 +82,7 @@ class Tomatinho:
         msg = _("Pomodoro") + f" ({POMODORO}m)"
         self._notify(msg, appinfo.ICON_POMO)
 
-    def start_short_rest(self, source) -> None:
+    def start_short_rest(self, source: Gtk.MenuItem) -> None:
         """Start a Short Pause."""
         if self._state != States.IDLE:
             self._recorder.record(op=self._state, completed=False)
@@ -88,7 +93,7 @@ class Tomatinho:
         msg = _("Short Pause") + f" ({SHORT_REST}m)"
         self._notify(msg, appinfo.ICON_REST_S)
 
-    def start_long_rest(self, source):
+    def start_long_rest(self, source: Gtk.MenuItem) -> None:
         """Start a Long Rest."""
         if self._state != States.IDLE:
             self._recorder.record(op=self._state, completed=False)
@@ -98,9 +103,8 @@ class Tomatinho:
         self._indicator.set_icon(appinfo.ICON_REST_L)
         msg = _("Long Break") + f" ({LONG_REST}m)"
         self._notify(msg, appinfo.ICON_REST_L)
-        return True
 
-    def stop_timer(self, source=None) -> None:
+    def stop_timer(self, source: Gtk.MenuItem = None) -> None:
         """Stop timer and go back to the idle state.
 
         If no ``source`` is specified, this method records that the last

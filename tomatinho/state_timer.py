@@ -9,12 +9,12 @@ REFRESH_PERIOD = 1
 
 
 class StateTimer:
-    """Timer used to change the application state."""
+    """Timer used to change the application state.
+
+    :callable label_cb: Callback function to call to update the App label.
+    """
 
     def __init__(self, label_cb: Callable[[str], None]):
-        """
-        :callable label_cb: Callback function to call to update the App label.
-        """
         self._label_cb = label_cb
 
         #: Event Source ID representing GLib timeout timer.
