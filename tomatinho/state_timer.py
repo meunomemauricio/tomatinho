@@ -15,15 +15,15 @@ class StateTimer:
 
         Starting the timer again will cancel the previous timeout timer.
 
-        :param duration: duration of the timer in milliseconds.
+        :param duration: duration of the timer in seconds.
         :param callback: callback function to be executed on timeout.
         """
 
         def _callback():
             """Wrapper to make sure the callback is executed only once.
 
-            `GLib.timeout_add` repeats the callback periodically until it's
-            removed or it returns False, so we force that condition.
+            `GLib.timeout_add_seconds` repeats the callback periodically until
+            it's removed or it returns False, so we force that condition.
             """
             callback()
             return False
@@ -31,7 +31,7 @@ class StateTimer:
         if self._id is not None:
             GLib.source_remove(self._id)
 
-        self._id = GLib.timeout_add(duration, _callback)
+        self._id = GLib.timeout_add_seconds(duration, _callback)
 
     def stop(self) -> None:
         """Stop the timer."""

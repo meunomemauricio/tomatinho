@@ -70,37 +70,37 @@ class Tomatinho:
     def start_pomodoro(self, source) -> None:
         """Start the Pomodoro timer."""
         if self._state != States.IDLE:
-            self._recorder.record(self._state, False)
+            self._recorder.record(op=self._state, completed=False)
 
         self._state = States.POMODORO
-        self._timer.start(POMODORO * 60 * 1000, self.stop_timer)
+        self._timer.start(POMODORO * 60, self.stop_timer)
         self._indicator.set_icon(appinfo.ICON_POMO)
-        msg = _("Pomodoro") + f" ({POMODORO}m)"
         self._indicator.set_label("PO", "")
+        msg = _("Pomodoro") + f" ({POMODORO}m)"
         self._notify(msg, appinfo.ICON_POMO)
 
     def start_short_rest(self, source) -> None:
         """Start a Short Pause."""
         if self._state != States.IDLE:
-            self._recorder.record(self._state, False)
+            self._recorder.record(op=self._state, completed=False)
 
         self._state = States.SHORT_REST
-        self._timer.start(SHORT_REST * 60 * 1000, self.stop_timer)
+        self._timer.start(SHORT_REST * 60, self.stop_timer)
         self._indicator.set_icon(appinfo.ICON_REST_S)
-        msg = _("Short Pause") + f" ({SHORT_REST}m)"
         self._indicator.set_label("SR", "")
+        msg = _("Short Pause") + f" ({SHORT_REST}m)"
         self._notify(msg, appinfo.ICON_REST_S)
 
     def start_long_rest(self, source) -> None:
         """Start a Long Rest."""
         if self._state != States.IDLE:
-            self._recorder.record(self._state, False)
+            self._recorder.record(op=self._state, completed=False)
 
         self._state = States.LONG_REST
-        self._timer.start(LONG_REST * 60 * 1000, self.stop_timer)
+        self._timer.start(LONG_REST * 60, self.stop_timer)
         self._indicator.set_icon(appinfo.ICON_REST_L)
-        msg = _("Long Break") + f" ({LONG_REST}m)"
         self._indicator.set_label("LR", "")
+        msg = _("Long Break") + f" ({LONG_REST}m)"
         self._notify(msg, appinfo.ICON_REST_L)
 
     def stop_timer(self, source=None) -> None:
@@ -113,9 +113,9 @@ class Tomatinho:
         as interrupted.
         """
         if source is None:
-            self._recorder.record(self._state, True)
+            self._recorder.record(op=self._state, completed=True)
         elif self._state != States.IDLE:
-            self._recorder.record(self._state, False)
+            self._recorder.record(op=self._state, completed=False)
 
         self._state = States.IDLE
         self._timer.stop()
@@ -126,7 +126,7 @@ class Tomatinho:
     def quit(self, source) -> None:
         """Quit the Application."""
         if self._state != States.IDLE:
-            self._recorder.record(self._state, False)
+            self._recorder.record(op=self._state, completed=False)
 
         Gtk.main_quit()
 

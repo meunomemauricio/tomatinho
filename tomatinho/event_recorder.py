@@ -34,16 +34,16 @@ class EventRecorder:
         conn.commit()
         return conn
 
-    def record(self, operation, completed) -> None:
+    def record(self, op, completed) -> None:
         """Record an event to the DB.
 
-        :param operation: A value from the States enum representing the state
-        that has just finished.
+        :param op: A value from the States enum representing the state that has
+        just finished.
         :param completed: True if the operation was completed or False if it
         was interrupted.
         """
         current_datetime = datetime.datetime.now()
         self.db.cursor().execute(
-            self.INSERT_QUERY, (operation, completed, current_datetime)
+            self.INSERT_QUERY, (op, completed, current_datetime)
         )
         self.db.commit()
