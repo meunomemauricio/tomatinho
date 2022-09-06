@@ -6,6 +6,7 @@ Used to generate About page and package information.
 from pathlib import Path
 
 # General information
+# TODO: Load from project config
 ID = "tomatinho"
 NAME = "Tomatinho"
 COPYRIGHT = "(C) 2016 Mauricio Freitas"

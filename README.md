@@ -18,7 +18,7 @@ Long Break Status | About Dialog
 
 Install system dependencies:
 
-    $ apt install intltool
+    $ apt install intltool libgirepository1.0-dev
 
 TODO:
 * Build I18N

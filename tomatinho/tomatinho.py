@@ -1,7 +1,7 @@
 """Main Application module."""
 
 import signal
-from collections import Callable
+from typing import Callable
 
 from gi.repository import AppIndicator3, Gtk, Notify
 
