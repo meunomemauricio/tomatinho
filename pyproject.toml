@@ -7,7 +7,6 @@ name="tomatinho"
 version="0.2"
 description="GTK Pomodoro Timer application"
 authors=[{name="Mauricio Freitas"}]
-urls={repo="https://github.com/meunomemauricio/tomatinho"}
 readme="README.md"
 license={text = "MIT"}
 requires-python=">=3.8"
@@ -26,6 +25,9 @@ dependencies=["PyGObject==3.42.2"]
 
 [project.scripts]
 tomatinho="tomatinho.tomatinho:main"
+
+[project.urls]
+homepage = "https://github.com/meunomemauricio/tomatinho"
 
 [tool.setuptools]
 packages=["tomatinho"]
